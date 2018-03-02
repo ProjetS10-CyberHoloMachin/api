@@ -1,0 +1,24 @@
+
+{
+    "microApp": {
+        "info" : {
+            "home": {
+                "title": "Infos",
+                "createLabel": "Créer un nouveau Info",
+                "createOrEditLabel": "Créer ou éditer un Info"
+            },
+            "created": "Un nouveau Info a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Info avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Info avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Info {{ id }} ?"
+            },
+            "detail": {
+                "title": "Info"
+            },
+            "description": "Description",
+            "definition": "Definition",
+            "notification": "Notification"
+        }
+    }
+}

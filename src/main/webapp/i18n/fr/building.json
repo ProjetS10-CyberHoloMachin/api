@@ -1,0 +1,22 @@
+
+{
+    "microApp": {
+        "building" : {
+            "home": {
+                "title": "Buildings",
+                "createLabel": "Créer un nouveau Building",
+                "createOrEditLabel": "Créer ou éditer un Building"
+            },
+            "created": "Un nouveau Building a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Building avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Building avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Building {{ id }} ?"
+            },
+            "detail": {
+                "title": "Building"
+            },
+            "name": "Name"
+        }
+    }
+}

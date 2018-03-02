@@ -1,0 +1,24 @@
+
+{
+    "microApp": {
+        "buildingData" : {
+            "home": {
+                "title": "BuildingData",
+                "createLabel": "Créer un nouveau Building Data",
+                "createOrEditLabel": "Créer ou éditer un Building Data"
+            },
+            "created": "Un nouveau Building Data a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Building Data avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Building Data avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Building Data {{ id }} ?"
+            },
+            "detail": {
+                "title": "Building Data"
+            },
+            "description": "Description",
+            "building": "Building",
+            "dataDefinition": "Data Definition"
+        }
+    }
+}

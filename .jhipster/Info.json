@@ -1,0 +1,29 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "definition",
+            "otherEntityName": "infoDefinition",
+            "otherEntityField": "label"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "notification",
+            "otherEntityName": "notification",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180302091224",
+    "entityTableName": "info",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

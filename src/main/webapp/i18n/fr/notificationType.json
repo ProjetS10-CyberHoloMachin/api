@@ -1,0 +1,10 @@
+{
+    "microApp": {
+        "NotificationType" : {
+            "null": "",
+            "INFO": "INFO",
+            "ERROR": "ERROR",
+            "CHECK": "CHECK"
+        }
+    }
+}

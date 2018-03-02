@@ -1,0 +1,78 @@
+<div>
+    <h2>
+        <span jhiTranslate="microApp.buildingData.home.title">Building Data</span>
+        <button class="btn btn-primary float-right jh-create-entity create-building-data" [routerLink]="['/', { outlets: { popup: ['building-data-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span  jhiTranslate="microApp.buildingData.home.createLabel">
+            Create new Building Data
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="buildingData">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="description"><span jhiTranslate="microApp.buildingData.description">Description</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="buildingName"><span jhiTranslate="microApp.buildingData.building">Building</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="dataDefinitionLabel"><span jhiTranslate="microApp.buildingData.dataDefinition">Data Definition</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let buildingData of buildingData ;trackBy: trackId">
+                <td><a [routerLink]="['../building-data', buildingData.id ]">{{buildingData.id}}</a></td>
+                <td>{{buildingData.description}}</td>
+                <td>
+                    <div *ngIf="buildingData.buildingId">
+                        <a [routerLink]="['../building', buildingData.buildingId  ]" >{{buildingData.buildingName}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="buildingData.dataDefinitionId">
+                        <a [routerLink]="['../building-data-definition', buildingData.dataDefinitionId  ]" >{{buildingData.dataDefinitionLabel}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../building-data', buildingData.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'building-data/'+ buildingData.id + '/edit'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'building-data/'+ buildingData.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="buildingData && buildingData.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

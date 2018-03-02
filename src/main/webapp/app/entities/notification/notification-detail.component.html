@@ -1,0 +1,34 @@
+
+<div *ngIf="notification">
+    <h2><span jhiTranslate="microApp.notification.detail.title">Notification</span> {{notification.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="microApp.notification.date">Date</span></dt>
+        <dd>
+            <span>{{notification.date | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.notification.type">Type</span></dt>
+        <dd>
+            <span jhiTranslate="{{'microApp.NotificationType.' + notification.type}}">{{notification.type}}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.notification.title">Title</span></dt>
+        <dd>
+            <span>{{notification.title}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'notification/'+ notification.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

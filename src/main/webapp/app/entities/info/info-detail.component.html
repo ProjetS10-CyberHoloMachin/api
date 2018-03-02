@@ -1,0 +1,38 @@
+
+<div *ngIf="info">
+    <h2><span jhiTranslate="microApp.info.detail.title">Info</span> {{info.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="microApp.info.description">Description</span></dt>
+        <dd>
+            <span>{{info.description}}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.info.definition">Definition</span></dt>
+        <dd>
+            <div *ngIf="info.definitionId">
+                <a [routerLink]="['/info-definition', info.definitionId]">{{info.definitionLabel}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="microApp.info.notification">Notification</span></dt>
+        <dd>
+            <div *ngIf="info.notificationId">
+                <a [routerLink]="['/notification', info.notificationId]">{{info.notificationId}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'info/'+ info.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>
