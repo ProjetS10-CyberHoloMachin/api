@@ -1,5 +1,6 @@
 package fr.cyberholocampus.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -36,6 +37,7 @@ public class NotificationData implements Serializable {
     private String description;
 
     @ManyToOne
+    @JsonIgnoreProperties("infos")
     private Notification notification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

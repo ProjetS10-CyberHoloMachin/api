@@ -1,5 +1,6 @@
 package fr.cyberholocampus.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -36,6 +37,7 @@ public class BuildingData implements Serializable {
     private String label;
 
     @ManyToOne(optional = false)
+    @JsonIgnoreProperties("data")
     @NotNull
     private Building building;
 

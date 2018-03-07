@@ -1,6 +1,7 @@
 package fr.cyberholocampus.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -45,17 +46,18 @@ public class Notification implements Serializable {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @OneToMany(mappedBy = "notification")
-    @JsonIgnore
+    @OneToMany(mappedBy = "notification", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("notification")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<NotificationData> infos = new HashSet<>();
 
-    @OneToMany(mappedBy = "notification")
-    @JsonIgnore
+    @OneToMany(mappedBy = "notification", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("notification")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Affectation> affectations = new HashSet<>();
 
     @ManyToOne(optional = false)
+    @JsonIgnoreProperties("notifications")
     @NotNull
     private Building building;
 
