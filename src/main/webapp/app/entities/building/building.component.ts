@@ -13,7 +13,6 @@ import { ITEMS_PER_PAGE, Principal } from '../../shared';
     templateUrl: './building.component.html'
 })
 export class BuildingComponent implements OnInit, OnDestroy {
-
 currentAccount: any;
     buildings: Building[];
     error: any;

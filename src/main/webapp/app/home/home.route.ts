@@ -10,3 +10,4 @@ export const HOME_ROUTE: Route = {
         pageTitle: 'home.title'
     }
 };
+
