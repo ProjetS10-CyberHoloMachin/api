@@ -4,7 +4,8 @@ import fr.cyberholocampus.app.domain.Affectation;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Spring Data JPA repository for the Affectation entity.
@@ -14,6 +15,6 @@ import java.util.List;
 public interface AffectationRepository extends JpaRepository<Affectation, Long> {
 
     @Query("select affectation from Affectation affectation where affectation.user.login = ?#{principal.username}")
-    List<Affectation> findByUserIsCurrentUser();
+    Page<Affectation> findByUserIsCurrentUser(Pageable pageable);
 
 }

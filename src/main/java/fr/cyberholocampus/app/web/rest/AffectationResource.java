@@ -107,6 +107,21 @@ public class AffectationResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/affectations");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+    
+    /**
+     * GET  /affectations/own : get all current user's affectations.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of affectations in body
+     */
+    @GetMapping("/affectations/own")
+    @Timed
+    public ResponseEntity<List<Affectation>> getUserAffectations(Pageable pageable) {
+        log.debug("REST request to get a page of Affectations");
+        Page<Affectation> page = affectationRepository.findByUserIsCurrentUser(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/affectations/own");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 
     /**
      * GET  /affectations/:id : get the "id" affectation.
