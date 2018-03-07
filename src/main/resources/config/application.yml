@@ -16,7 +16,7 @@
 
 eureka:
     client:
-        enabled: true
+        enabled: false
         healthcheck:
             enabled: true
         fetch-registry: true
@@ -24,8 +24,8 @@ eureka:
         instance-info-replication-interval-seconds: 10
         registry-fetch-interval-seconds: 10
     instance:
-        appname: micro
-        instanceId: micro:${spring.application.instance-id:${random.value}}
+        appname: cyberholocampus
+        instanceId: cyberholocampus:${spring.application.instance-id:${random.value}}
         lease-renewal-interval-in-seconds: 5
         lease-expiration-duration-in-seconds: 10
         status-page-url-path: ${management.context-path}/info
@@ -66,7 +66,7 @@ management:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
 spring:
     application:
-        name: micro
+        name: cyberholocampus
     jackson:
         serialization.write_dates_as_timestamps: false
     jpa:
@@ -116,11 +116,11 @@ jhipster:
         #allow-credentials: true
         #max-age: 1800
     mail:
-        from: micro@localhost
+        from: cyberholocampus@localhost
     swagger:
         default-include-pattern: /api/.*
-        title: micro API
-        description: micro API documentation
+        title: cyberholocampus API
+        description: cyberholocampus API documentation
         version: 0.0.1
         terms-of-service-url:
         contact-name:

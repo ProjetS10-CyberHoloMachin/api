@@ -1,7 +1,7 @@
 {
-  "name": "micro",
+  "name": "cyberholocampus",
   "version": "0.0.0",
-  "description": "Description for micro",
+  "description": "Description for cyberholocampus",
   "private": true,
   "license": "UNLICENSED",
   "cacheDirectories": [
@@ -72,6 +72,9 @@
     "tslint": "5.5.0",
     "tslint-loader": "3.5.3",
     "typescript": "2.6.2",
+    "sass-loader": "6.0.6",
+    "node-sass": "4.5.3",
+    "postcss-loader": "2.0.9",
     "xml2js": "0.4.17",
     "uglifyjs-webpack-plugin": "1.1.5",
     "webpack": "3.10.0",

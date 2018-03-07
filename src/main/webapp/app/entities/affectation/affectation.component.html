@@ -1,37 +1,50 @@
 <div>
     <h2>
-        <span jhiTranslate="microApp.affectation.home.title">Affectations</span>
+        <span jhiTranslate="cyberholocampusApp.affectation.home.title">Affectations</span>
         <button class="btn btn-primary float-right jh-create-entity create-affectation" [routerLink]="['/', { outlets: { popup: ['affectation-new'] } }]">
             <span class="fa fa-plus"></span>
-            <span  jhiTranslate="microApp.affectation.home.createLabel">
+            <span class="hidden-sm-down"  jhiTranslate="cyberholocampusApp.affectation.home.createLabel">
             Create new Affectation
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
     <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'cyberholocampusApp.affectation.home.search' | translate }}">
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
     <br/>
     <div class="table-responsive" *ngIf="affectations">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="notificationId"><span jhiTranslate="microApp.affectation.notification">Notification</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="userLogin"><span jhiTranslate="microApp.affectation.user">User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="user.login"><span jhiTranslate="cyberholocampusApp.affectation.user">User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="notification.title"><span jhiTranslate="cyberholocampusApp.affectation.notification">Notification</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let affectation of affectations ;trackBy: trackId">
                 <td><a [routerLink]="['../affectation', affectation.id ]">{{affectation.id}}</a></td>
                 <td>
-                    <div *ngIf="affectation.notificationId">
-                        <a [routerLink]="['../notification', affectation.notificationId  ]" >{{affectation.notificationId}}</a>
-                    </div>
+                    {{affectation.user?.login}}
                 </td>
                 <td>
-                    {{affectation.userLogin}}
+                    <div *ngIf="affectation.notification">
+                        <a [routerLink]="['../notification', affectation.notification?.id ]" >{{affectation.notification?.title}}</a>
+                    </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
@@ -62,13 +75,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
-    <div *ngIf="affectations && affectations.length">
-        <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        </div>
-        <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
-        </div>
     </div>
 </div>

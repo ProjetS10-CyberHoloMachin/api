@@ -4,11 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import fr.cyberholocampus.app.domain.BuildingData;
 
 import fr.cyberholocampus.app.repository.BuildingDataRepository;
+import fr.cyberholocampus.app.repository.search.BuildingDataSearchRepository;
 import fr.cyberholocampus.app.web.rest.errors.BadRequestAlertException;
 import fr.cyberholocampus.app.web.rest.util.HeaderUtil;
 import fr.cyberholocampus.app.web.rest.util.PaginationUtil;
-import fr.cyberholocampus.app.service.dto.BuildingDataDTO;
-import fr.cyberholocampus.app.service.mapper.BuildingDataMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +18,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing BuildingData.
@@ -38,30 +42,29 @@ public class BuildingDataResource {
 
     private final BuildingDataRepository buildingDataRepository;
 
-    private final BuildingDataMapper buildingDataMapper;
+    private final BuildingDataSearchRepository buildingDataSearchRepository;
 
-    public BuildingDataResource(BuildingDataRepository buildingDataRepository, BuildingDataMapper buildingDataMapper) {
+    public BuildingDataResource(BuildingDataRepository buildingDataRepository, BuildingDataSearchRepository buildingDataSearchRepository) {
         this.buildingDataRepository = buildingDataRepository;
-        this.buildingDataMapper = buildingDataMapper;
+        this.buildingDataSearchRepository = buildingDataSearchRepository;
     }
 
     /**
      * POST  /building-data : Create a new buildingData.
      *
-     * @param buildingDataDTO the buildingDataDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new buildingDataDTO, or with status 400 (Bad Request) if the buildingData has already an ID
+     * @param buildingData the buildingData to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new buildingData, or with status 400 (Bad Request) if the buildingData has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/building-data")
     @Timed
-    public ResponseEntity<BuildingDataDTO> createBuildingData(@RequestBody BuildingDataDTO buildingDataDTO) throws URISyntaxException {
-        log.debug("REST request to save BuildingData : {}", buildingDataDTO);
-        if (buildingDataDTO.getId() != null) {
+    public ResponseEntity<BuildingData> createBuildingData(@Valid @RequestBody BuildingData buildingData) throws URISyntaxException {
+        log.debug("REST request to save BuildingData : {}", buildingData);
+        if (buildingData.getId() != null) {
             throw new BadRequestAlertException("A new buildingData cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        BuildingData buildingData = buildingDataMapper.toEntity(buildingDataDTO);
-        buildingData = buildingDataRepository.save(buildingData);
-        BuildingDataDTO result = buildingDataMapper.toDto(buildingData);
+        BuildingData result = buildingDataRepository.save(buildingData);
+        buildingDataSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/building-data/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -70,24 +73,23 @@ public class BuildingDataResource {
     /**
      * PUT  /building-data : Updates an existing buildingData.
      *
-     * @param buildingDataDTO the buildingDataDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated buildingDataDTO,
-     * or with status 400 (Bad Request) if the buildingDataDTO is not valid,
-     * or with status 500 (Internal Server Error) if the buildingDataDTO couldn't be updated
+     * @param buildingData the buildingData to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated buildingData,
+     * or with status 400 (Bad Request) if the buildingData is not valid,
+     * or with status 500 (Internal Server Error) if the buildingData couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/building-data")
     @Timed
-    public ResponseEntity<BuildingDataDTO> updateBuildingData(@RequestBody BuildingDataDTO buildingDataDTO) throws URISyntaxException {
-        log.debug("REST request to update BuildingData : {}", buildingDataDTO);
-        if (buildingDataDTO.getId() == null) {
-            return createBuildingData(buildingDataDTO);
+    public ResponseEntity<BuildingData> updateBuildingData(@Valid @RequestBody BuildingData buildingData) throws URISyntaxException {
+        log.debug("REST request to update BuildingData : {}", buildingData);
+        if (buildingData.getId() == null) {
+            return createBuildingData(buildingData);
         }
-        BuildingData buildingData = buildingDataMapper.toEntity(buildingDataDTO);
-        buildingData = buildingDataRepository.save(buildingData);
-        BuildingDataDTO result = buildingDataMapper.toDto(buildingData);
+        BuildingData result = buildingDataRepository.save(buildingData);
+        buildingDataSearchRepository.save(result);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, buildingDataDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, buildingData.getId().toString()))
             .body(result);
     }
 
@@ -99,32 +101,31 @@ public class BuildingDataResource {
      */
     @GetMapping("/building-data")
     @Timed
-    public ResponseEntity<List<BuildingDataDTO>> getAllBuildingData(Pageable pageable) {
+    public ResponseEntity<List<BuildingData>> getAllBuildingData(Pageable pageable) {
         log.debug("REST request to get a page of BuildingData");
         Page<BuildingData> page = buildingDataRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/building-data");
-        return new ResponseEntity<>(buildingDataMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
      * GET  /building-data/:id : get the "id" buildingData.
      *
-     * @param id the id of the buildingDataDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the buildingDataDTO, or with status 404 (Not Found)
+     * @param id the id of the buildingData to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the buildingData, or with status 404 (Not Found)
      */
     @GetMapping("/building-data/{id}")
     @Timed
-    public ResponseEntity<BuildingDataDTO> getBuildingData(@PathVariable Long id) {
+    public ResponseEntity<BuildingData> getBuildingData(@PathVariable Long id) {
         log.debug("REST request to get BuildingData : {}", id);
         BuildingData buildingData = buildingDataRepository.findOne(id);
-        BuildingDataDTO buildingDataDTO = buildingDataMapper.toDto(buildingData);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(buildingDataDTO));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(buildingData));
     }
 
     /**
      * DELETE  /building-data/:id : delete the "id" buildingData.
      *
-     * @param id the id of the buildingDataDTO to delete
+     * @param id the id of the buildingData to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/building-data/{id}")
@@ -132,6 +133,25 @@ public class BuildingDataResource {
     public ResponseEntity<Void> deleteBuildingData(@PathVariable Long id) {
         log.debug("REST request to delete BuildingData : {}", id);
         buildingDataRepository.delete(id);
+        buildingDataSearchRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/building-data?query=:query : search for the buildingData corresponding
+     * to the query.
+     *
+     * @param query the query of the buildingData search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/building-data")
+    @Timed
+    public ResponseEntity<List<BuildingData>> searchBuildingData(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of BuildingData for query {}", query);
+        Page<BuildingData> page = buildingDataSearchRepository.search(queryStringQuery(query), pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/building-data");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 }

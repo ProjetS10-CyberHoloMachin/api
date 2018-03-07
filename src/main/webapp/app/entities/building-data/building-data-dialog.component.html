@@ -1,7 +1,7 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
     <div class="modal-header">
-        <h4 class="modal-title" id="myBuildingDataLabel" jhiTranslate="microApp.buildingData.home.createOrEditLabel">Create or edit a Building Data</h4>
+        <h4 class="modal-title" id="myBuildingDataLabel" jhiTranslate="cyberholocampusApp.buildingData.home.createOrEditLabel">Create or edit a Building Data</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
@@ -13,24 +13,48 @@
                    [(ngModel)]="buildingData.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="microApp.buildingData.description" for="field_description">Description</label>
+            <label class="form-control-label" jhiTranslate="cyberholocampusApp.buildingData.description" for="field_description">Description</label>
             <input type="text" class="form-control" name="description" id="field_description"
-                [(ngModel)]="buildingData.description" />
+                [(ngModel)]="buildingData.description" required minlength="3"/>
+            <div [hidden]="!(editForm.controls.description?.dirty && editForm.controls.description?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.description?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.description?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 3 }">
+                   This field is required to be at least 3 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="cyberholocampusApp.buildingData.label" for="field_label">Label</label>
+            <input type="text" class="form-control" name="label" id="field_label"
+                [(ngModel)]="buildingData.label" required minlength="3"/>
+            <div [hidden]="!(editForm.controls.label?.dirty && editForm.controls.label?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.label?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.label?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 3 }">
+                   This field is required to be at least 3 characters.
+                </small>
+            </div>
         </div>
 
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="microApp.buildingData.building" for="field_building">Building</label>
-            <select class="form-control" id="field_building" name="building" [(ngModel)]="buildingData.buildingId" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="buildingOption.id" *ngFor="let buildingOption of buildings; trackBy: trackBuildingById">{{buildingOption.name}}</option>
+            <label class="form-control-label" jhiTranslate="cyberholocampusApp.buildingData.building" for="field_building">Building</label>
+            <select class="form-control" id="field_building" name="building" [(ngModel)]="buildingData.building"  required>
+                <option *ngIf="!editForm.value.building" [ngValue]="null" selected></option>
+                <option [ngValue]="buildingOption.id === buildingData.building?.id ? buildingData.building : buildingOption" *ngFor="let buildingOption of buildings; trackBy: trackBuildingById">{{buildingOption.name}}</option>
             </select>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="microApp.buildingData.dataDefinition" for="field_dataDefinition">Data Definition</label>
-            <select class="form-control" id="field_dataDefinition" name="dataDefinition" [(ngModel)]="buildingData.dataDefinitionId" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="buildingDataDefinitionOption.id" *ngFor="let buildingDataDefinitionOption of buildingdatadefinitions; trackBy: trackBuildingDataDefinitionById">{{buildingDataDefinitionOption.label}}</option>
-            </select>
+        <div [hidden]="!(editForm.controls.building?.dirty && editForm.controls.building?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.building?.errors?.required" jhiTranslate="entity.validation.required">
+                This field is required.
+            </small>
         </div>
     </div>
     <div class="modal-footer">

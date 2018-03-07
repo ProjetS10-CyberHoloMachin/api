@@ -1,6 +1,6 @@
 package fr.cyberholocampus.app.repository;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 import fr.cyberholocampus.app.config.Constants;
 import fr.cyberholocampus.app.config.audit.AuditEventConverter;
 import fr.cyberholocampus.app.domain.PersistentAuditEvent;
@@ -32,7 +32,7 @@ import static fr.cyberholocampus.app.repository.CustomAuditEventRepository.EVENT
  * @see CustomAuditEventRepository
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 @Transactional
 public class CustomAuditEventRepositoryIntTest {
 

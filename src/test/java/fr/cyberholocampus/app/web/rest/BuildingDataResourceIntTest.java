@@ -1,11 +1,11 @@
 package fr.cyberholocampus.app.web.rest;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 
 import fr.cyberholocampus.app.domain.BuildingData;
+import fr.cyberholocampus.app.domain.Building;
 import fr.cyberholocampus.app.repository.BuildingDataRepository;
-import fr.cyberholocampus.app.service.dto.BuildingDataDTO;
-import fr.cyberholocampus.app.service.mapper.BuildingDataMapper;
+import fr.cyberholocampus.app.repository.search.BuildingDataSearchRepository;
 import fr.cyberholocampus.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -37,17 +37,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see BuildingDataResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 public class BuildingDataResourceIntTest {
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
+    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
+    private static final String UPDATED_LABEL = "BBBBBBBBBB";
+
     @Autowired
     private BuildingDataRepository buildingDataRepository;
 
     @Autowired
-    private BuildingDataMapper buildingDataMapper;
+    private BuildingDataSearchRepository buildingDataSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -68,7 +71,7 @@ public class BuildingDataResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final BuildingDataResource buildingDataResource = new BuildingDataResource(buildingDataRepository, buildingDataMapper);
+        final BuildingDataResource buildingDataResource = new BuildingDataResource(buildingDataRepository, buildingDataSearchRepository);
         this.restBuildingDataMockMvc = MockMvcBuilders.standaloneSetup(buildingDataResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -84,12 +87,19 @@ public class BuildingDataResourceIntTest {
      */
     public static BuildingData createEntity(EntityManager em) {
         BuildingData buildingData = new BuildingData()
-            .description(DEFAULT_DESCRIPTION);
+            .description(DEFAULT_DESCRIPTION)
+            .label(DEFAULT_LABEL);
+        // Add required entity
+        Building building = BuildingResourceIntTest.createEntity(em);
+        em.persist(building);
+        em.flush();
+        buildingData.setBuilding(building);
         return buildingData;
     }
 
     @Before
     public void initTest() {
+        buildingDataSearchRepository.deleteAll();
         buildingData = createEntity(em);
     }
 
@@ -99,10 +109,9 @@ public class BuildingDataResourceIntTest {
         int databaseSizeBeforeCreate = buildingDataRepository.findAll().size();
 
         // Create the BuildingData
-        BuildingDataDTO buildingDataDTO = buildingDataMapper.toDto(buildingData);
         restBuildingDataMockMvc.perform(post("/api/building-data")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(buildingDataDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(buildingData)))
             .andExpect(status().isCreated());
 
         // Validate the BuildingData in the database
@@ -110,6 +119,11 @@ public class BuildingDataResourceIntTest {
         assertThat(buildingDataList).hasSize(databaseSizeBeforeCreate + 1);
         BuildingData testBuildingData = buildingDataList.get(buildingDataList.size() - 1);
         assertThat(testBuildingData.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testBuildingData.getLabel()).isEqualTo(DEFAULT_LABEL);
+
+        // Validate the BuildingData in Elasticsearch
+        BuildingData buildingDataEs = buildingDataSearchRepository.findOne(testBuildingData.getId());
+        assertThat(buildingDataEs).isEqualToIgnoringGivenFields(testBuildingData);
     }
 
     @Test
@@ -119,17 +133,52 @@ public class BuildingDataResourceIntTest {
 
         // Create the BuildingData with an existing ID
         buildingData.setId(1L);
-        BuildingDataDTO buildingDataDTO = buildingDataMapper.toDto(buildingData);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restBuildingDataMockMvc.perform(post("/api/building-data")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(buildingDataDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(buildingData)))
             .andExpect(status().isBadRequest());
 
         // Validate the BuildingData in the database
         List<BuildingData> buildingDataList = buildingDataRepository.findAll();
         assertThat(buildingDataList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
+    public void checkDescriptionIsRequired() throws Exception {
+        int databaseSizeBeforeTest = buildingDataRepository.findAll().size();
+        // set the field null
+        buildingData.setDescription(null);
+
+        // Create the BuildingData, which fails.
+
+        restBuildingDataMockMvc.perform(post("/api/building-data")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(buildingData)))
+            .andExpect(status().isBadRequest());
+
+        List<BuildingData> buildingDataList = buildingDataRepository.findAll();
+        assertThat(buildingDataList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkLabelIsRequired() throws Exception {
+        int databaseSizeBeforeTest = buildingDataRepository.findAll().size();
+        // set the field null
+        buildingData.setLabel(null);
+
+        // Create the BuildingData, which fails.
+
+        restBuildingDataMockMvc.perform(post("/api/building-data")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(buildingData)))
+            .andExpect(status().isBadRequest());
+
+        List<BuildingData> buildingDataList = buildingDataRepository.findAll();
+        assertThat(buildingDataList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -143,7 +192,8 @@ public class BuildingDataResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(buildingData.getId().intValue())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())));
     }
 
     @Test
@@ -157,7 +207,8 @@ public class BuildingDataResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(buildingData.getId().intValue()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
+            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()));
     }
 
     @Test
@@ -173,6 +224,7 @@ public class BuildingDataResourceIntTest {
     public void updateBuildingData() throws Exception {
         // Initialize the database
         buildingDataRepository.saveAndFlush(buildingData);
+        buildingDataSearchRepository.save(buildingData);
         int databaseSizeBeforeUpdate = buildingDataRepository.findAll().size();
 
         // Update the buildingData
@@ -180,12 +232,12 @@ public class BuildingDataResourceIntTest {
         // Disconnect from session so that the updates on updatedBuildingData are not directly saved in db
         em.detach(updatedBuildingData);
         updatedBuildingData
-            .description(UPDATED_DESCRIPTION);
-        BuildingDataDTO buildingDataDTO = buildingDataMapper.toDto(updatedBuildingData);
+            .description(UPDATED_DESCRIPTION)
+            .label(UPDATED_LABEL);
 
         restBuildingDataMockMvc.perform(put("/api/building-data")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(buildingDataDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedBuildingData)))
             .andExpect(status().isOk());
 
         // Validate the BuildingData in the database
@@ -193,6 +245,11 @@ public class BuildingDataResourceIntTest {
         assertThat(buildingDataList).hasSize(databaseSizeBeforeUpdate);
         BuildingData testBuildingData = buildingDataList.get(buildingDataList.size() - 1);
         assertThat(testBuildingData.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testBuildingData.getLabel()).isEqualTo(UPDATED_LABEL);
+
+        // Validate the BuildingData in Elasticsearch
+        BuildingData buildingDataEs = buildingDataSearchRepository.findOne(testBuildingData.getId());
+        assertThat(buildingDataEs).isEqualToIgnoringGivenFields(testBuildingData);
     }
 
     @Test
@@ -201,12 +258,11 @@ public class BuildingDataResourceIntTest {
         int databaseSizeBeforeUpdate = buildingDataRepository.findAll().size();
 
         // Create the BuildingData
-        BuildingDataDTO buildingDataDTO = buildingDataMapper.toDto(buildingData);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restBuildingDataMockMvc.perform(put("/api/building-data")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(buildingDataDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(buildingData)))
             .andExpect(status().isCreated());
 
         // Validate the BuildingData in the database
@@ -219,6 +275,7 @@ public class BuildingDataResourceIntTest {
     public void deleteBuildingData() throws Exception {
         // Initialize the database
         buildingDataRepository.saveAndFlush(buildingData);
+        buildingDataSearchRepository.save(buildingData);
         int databaseSizeBeforeDelete = buildingDataRepository.findAll().size();
 
         // Get the buildingData
@@ -226,9 +283,29 @@ public class BuildingDataResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
+        // Validate Elasticsearch is empty
+        boolean buildingDataExistsInEs = buildingDataSearchRepository.exists(buildingData.getId());
+        assertThat(buildingDataExistsInEs).isFalse();
+
         // Validate the database is empty
         List<BuildingData> buildingDataList = buildingDataRepository.findAll();
         assertThat(buildingDataList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void searchBuildingData() throws Exception {
+        // Initialize the database
+        buildingDataRepository.saveAndFlush(buildingData);
+        buildingDataSearchRepository.save(buildingData);
+
+        // Search the buildingData
+        restBuildingDataMockMvc.perform(get("/api/_search/building-data?query=id:" + buildingData.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(buildingData.getId().intValue())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())));
     }
 
     @Test
@@ -244,28 +321,5 @@ public class BuildingDataResourceIntTest {
         assertThat(buildingData1).isNotEqualTo(buildingData2);
         buildingData1.setId(null);
         assertThat(buildingData1).isNotEqualTo(buildingData2);
-    }
-
-    @Test
-    @Transactional
-    public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(BuildingDataDTO.class);
-        BuildingDataDTO buildingDataDTO1 = new BuildingDataDTO();
-        buildingDataDTO1.setId(1L);
-        BuildingDataDTO buildingDataDTO2 = new BuildingDataDTO();
-        assertThat(buildingDataDTO1).isNotEqualTo(buildingDataDTO2);
-        buildingDataDTO2.setId(buildingDataDTO1.getId());
-        assertThat(buildingDataDTO1).isEqualTo(buildingDataDTO2);
-        buildingDataDTO2.setId(2L);
-        assertThat(buildingDataDTO1).isNotEqualTo(buildingDataDTO2);
-        buildingDataDTO1.setId(null);
-        assertThat(buildingDataDTO1).isNotEqualTo(buildingDataDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(buildingDataMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(buildingDataMapper.fromId(null)).isNull();
     }
 }

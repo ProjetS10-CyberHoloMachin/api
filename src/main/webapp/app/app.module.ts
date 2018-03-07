@@ -10,12 +10,12 @@ import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { ErrorHandlerInterceptor } from './blocks/interceptor/errorhandler.interceptor';
 import { NotificationInterceptor } from './blocks/interceptor/notification.interceptor';
-import { MicroSharedModule, UserRouteAccessService } from './shared';
-import { MicroAppRoutingModule} from './app-routing.module';
-import { MicroHomeModule } from './home/home.module';
-import { MicroAdminModule } from './admin/admin.module';
-import { MicroAccountModule } from './account/account.module';
-import { MicroEntityModule } from './entities/entity.module';
+import { CyberholocampusSharedModule, UserRouteAccessService } from './shared';
+import { CyberholocampusAppRoutingModule} from './app-routing.module';
+import { CyberholocampusHomeModule } from './home/home.module';
+import { CyberholocampusAdminModule } from './admin/admin.module';
+import { CyberholocampusAccountModule } from './account/account.module';
+import { CyberholocampusEntityModule } from './entities/entity.module';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import {
@@ -31,13 +31,13 @@ import {
 @NgModule({
     imports: [
         BrowserModule,
-        MicroAppRoutingModule,
+        CyberholocampusAppRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
-        MicroSharedModule,
-        MicroHomeModule,
-        MicroAdminModule,
-        MicroAccountModule,
-        MicroEntityModule,
+        CyberholocampusSharedModule,
+        CyberholocampusHomeModule,
+        CyberholocampusAdminModule,
+        CyberholocampusAccountModule,
+        CyberholocampusEntityModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [
@@ -88,4 +88,4 @@ import {
     ],
     bootstrap: [ JhiMainComponent ]
 })
-export class MicroAppModule {}
+export class CyberholocampusAppModule {}

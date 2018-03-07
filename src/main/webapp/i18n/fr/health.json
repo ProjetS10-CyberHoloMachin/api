@@ -17,6 +17,7 @@
             "hystrix": "Hystrix",
             "diskSpace": "Espace disque",
             "mail": "Email",
+            "elasticsearch": "Elasticsearch",
             "db": "Base de données"
         },
         "table": {

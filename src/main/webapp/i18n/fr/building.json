@@ -1,11 +1,12 @@
 
 {
-    "microApp": {
+    "cyberholocampusApp": {
         "building" : {
             "home": {
                 "title": "Buildings",
                 "createLabel": "Créer un nouveau Building",
-                "createOrEditLabel": "Créer ou éditer un Building"
+                "createOrEditLabel": "Créer ou éditer un Building",
+                "search": "Recherche pour Building"
             },
             "created": "Un nouveau Building a été créé avec l'identifiant {{ param }}",
             "updated": "Le Building avec l'identifiant {{ param }} a été mis à jour",
@@ -16,7 +17,9 @@
             "detail": {
                 "title": "Building"
             },
-            "name": "Name"
+            "name": "Name",
+            "data": "Data",
+            "notification": "Notification"
         }
     }
 }

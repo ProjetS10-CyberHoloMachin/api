@@ -12,6 +12,7 @@ export type EntityResponseType = HttpResponse<Building>;
 export class BuildingService {
 
     private resourceUrl =  SERVER_API_URL + 'api/buildings';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/buildings';
 
     constructor(private http: HttpClient) { }
 
@@ -40,6 +41,12 @@ export class BuildingService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+    }
+
+    search(req?: any): Observable<HttpResponse<Building[]>> {
+        const options = createRequestOption(req);
+        return this.http.get<Building[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<Building[]>) => this.convertArrayResponse(res));
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {

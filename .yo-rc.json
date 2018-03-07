@@ -5,7 +5,7 @@
       "nativeLanguage": "fr"
     },
     "jhipsterVersion": "4.14.0",
-    "baseName": "micro",
+    "baseName": "cyberholocampus",
     "packageName": "fr.cyberholocampus.app",
     "packageFolder": "fr/cyberholocampus/app",
     "serverPort": "8080",
@@ -16,15 +16,15 @@
     "databaseType": "sql",
     "devDatabaseType": "mysql",
     "prodDatabaseType": "mysql",
-    "searchEngine": false,
+    "searchEngine": "elasticsearch",
     "messageBroker": false,
     "serviceDiscoveryType": "eureka",
     "buildTool": "maven",
     "enableSocialSignIn": false,
     "enableSwaggerCodegen": true,
-    "jwtSecretKey": "fcb3550a81042ef902c81648ad751d540b24ccd2",
+    "jwtSecretKey": "b57c93edfb302d2e4cf158a2c28ed3f07287847c",
     "clientFramework": "angularX",
-    "useSass": false,
+    "useSass": true,
     "clientPackageManager": "yarn",
     "applicationType": "gateway",
     "testFrameworks": [],
@@ -32,7 +32,8 @@
     "enableTranslation": true,
     "nativeLanguage": "fr",
     "languages": [
-      "fr"
+      "fr",
+      "en"
     ]
   }
 }

@@ -5,12 +5,12 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { AffectationDialogComponent } from '../../../../../../main/webapp/app/entities/affectation/affectation-dialog.component';
 import { AffectationService } from '../../../../../../main/webapp/app/entities/affectation/affectation.service';
 import { Affectation } from '../../../../../../main/webapp/app/entities/affectation/affectation.model';
-import { NotificationService } from '../../../../../../main/webapp/app/entities/notification';
 import { UserService } from '../../../../../../main/webapp/app/shared';
+import { NotificationService } from '../../../../../../main/webapp/app/entities/notification';
 
 describe('Component Tests', () => {
 
@@ -23,11 +23,11 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [AffectationDialogComponent],
                 providers: [
-                    NotificationService,
                     UserService,
+                    NotificationService,
                     AffectationService
                 ]
             })

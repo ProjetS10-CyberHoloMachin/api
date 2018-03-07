@@ -5,10 +5,11 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { NotificationDialogComponent } from '../../../../../../main/webapp/app/entities/notification/notification-dialog.component';
 import { NotificationService } from '../../../../../../main/webapp/app/entities/notification/notification.service';
 import { Notification } from '../../../../../../main/webapp/app/entities/notification/notification.model';
+import { BuildingService } from '../../../../../../main/webapp/app/entities/building';
 
 describe('Component Tests', () => {
 
@@ -21,9 +22,10 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [NotificationDialogComponent],
                 providers: [
+                    BuildingService,
                     NotificationService
                 ]
             })

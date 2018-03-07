@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { MicroSharedModule } from '../shared';
+import { CyberholocampusSharedModule } from '../shared';
 
 import {
     Register,
@@ -21,7 +21,7 @@ import {
 
 @NgModule({
     imports: [
-        MicroSharedModule,
+        CyberholocampusSharedModule,
         RouterModule.forChild(accountState)
     ],
     declarations: [
@@ -42,4 +42,4 @@ import {
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MicroAccountModule {}
+export class CyberholocampusAccountModule {}

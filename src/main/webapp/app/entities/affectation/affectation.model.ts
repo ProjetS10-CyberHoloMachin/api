@@ -1,10 +1,10 @@
-import { BaseEntity } from './../../shared';
+import { BaseEntity, User } from './../../shared';
 
 export class Affectation implements BaseEntity {
     constructor(
         public id?: number,
-        public notificationId?: number,
-        public userId?: number,
+        public user?: User,
+        public notification?: BaseEntity,
     ) {
     }
 }

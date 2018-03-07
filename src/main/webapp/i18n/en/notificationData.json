@@ -1,0 +1,25 @@
+
+{
+    "cyberholocampusApp": {
+        "notificationData" : {
+            "home": {
+                "title": "Notification Data",
+                "createLabel": "Create a new Notification Data",
+                "createOrEditLabel": "Create or edit a Notification Data",
+                "search": "Search for Notification Data"
+            },
+            "created": "A new Notification Data is created with identifier {{ param }}",
+            "updated": "A Notification Data is updated with identifier {{ param }}",
+            "deleted": "A Notification Data is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Notification Data {{ id }}?"
+            },
+            "detail": {
+                "title": "Notification Data"
+            },
+            "label": "Label",
+            "description": "Description",
+            "notification": "Notification"
+        }
+    }
+}

@@ -1,6 +1,6 @@
 package fr.cyberholocampus.app.web.rest.errors;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see ExceptionTranslator
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 public class ExceptionTranslatorIntTest {
 
     @Autowired

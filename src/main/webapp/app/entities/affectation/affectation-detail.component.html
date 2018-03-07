@@ -1,18 +1,18 @@
 
 <div *ngIf="affectation">
-    <h2><span jhiTranslate="microApp.affectation.detail.title">Affectation</span> {{affectation.id}}</h2>
+    <h2><span jhiTranslate="cyberholocampusApp.affectation.detail.title">Affectation</span> {{affectation.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="microApp.affectation.notification">Notification</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.affectation.user">User</span></dt>
         <dd>
-            <div *ngIf="affectation.notificationId">
-                <a [routerLink]="['/notification', affectation.notificationId]">{{affectation.notificationId}}</a>
-            </div>
+            {{affectation.user?.login}}
         </dd>
-        <dt><span jhiTranslate="microApp.affectation.user">User</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.affectation.notification">Notification</span></dt>
         <dd>
-            {{affectation.userLogin}}
+            <div *ngIf="affectation.notification">
+                <a [routerLink]="['/notification', affectation.notification?.id]">{{affectation.notification?.title}}</a>
+            </div>
         </dd>
     </dl>
 

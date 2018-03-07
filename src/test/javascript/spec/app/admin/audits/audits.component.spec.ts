@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { NgbPaginationConfig} from '@ng-bootstrap/ng-bootstrap';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { PaginationConfig } from '../../../../../../main/webapp/app/blocks/config/uib-pagination.config';
 import { AuditsComponent } from '../../../../../../main/webapp/app/admin/audits/audits.component';
 import { AuditsService } from '../../../../../../main/webapp/app/admin/audits/audits.service';
@@ -38,7 +38,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [AuditsComponent],
                 providers: [
                     AuditsService,

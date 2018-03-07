@@ -1,11 +1,12 @@
 package fr.cyberholocampus.app.web.rest;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 
 import fr.cyberholocampus.app.domain.Notification;
+import fr.cyberholocampus.app.domain.Affectation;
+import fr.cyberholocampus.app.domain.Building;
 import fr.cyberholocampus.app.repository.NotificationRepository;
-import fr.cyberholocampus.app.service.dto.NotificationDTO;
-import fr.cyberholocampus.app.service.mapper.NotificationMapper;
+import fr.cyberholocampus.app.repository.search.NotificationSearchRepository;
 import fr.cyberholocampus.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -40,7 +41,7 @@ import fr.cyberholocampus.app.domain.enumeration.NotificationType;
  * @see NotificationResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 public class NotificationResourceIntTest {
 
     private static final Instant DEFAULT_DATE = Instant.ofEpochMilli(0L);
@@ -56,7 +57,7 @@ public class NotificationResourceIntTest {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private NotificationMapper notificationMapper;
+    private NotificationSearchRepository notificationSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -77,7 +78,7 @@ public class NotificationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final NotificationResource notificationResource = new NotificationResource(notificationRepository, notificationMapper);
+        final NotificationResource notificationResource = new NotificationResource(notificationRepository, notificationSearchRepository);
         this.restNotificationMockMvc = MockMvcBuilders.standaloneSetup(notificationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -96,11 +97,22 @@ public class NotificationResourceIntTest {
             .date(DEFAULT_DATE)
             .type(DEFAULT_TYPE)
             .title(DEFAULT_TITLE);
+        // Add required entity
+        Affectation affectation = AffectationResourceIntTest.createEntity(em);
+        em.persist(affectation);
+        em.flush();
+        notification.getAffectations().add(affectation);
+        // Add required entity
+        Building building = BuildingResourceIntTest.createEntity(em);
+        em.persist(building);
+        em.flush();
+        notification.setBuilding(building);
         return notification;
     }
 
     @Before
     public void initTest() {
+        notificationSearchRepository.deleteAll();
         notification = createEntity(em);
     }
 
@@ -110,10 +122,9 @@ public class NotificationResourceIntTest {
         int databaseSizeBeforeCreate = notificationRepository.findAll().size();
 
         // Create the Notification
-        NotificationDTO notificationDTO = notificationMapper.toDto(notification);
         restNotificationMockMvc.perform(post("/api/notifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(notificationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(notification)))
             .andExpect(status().isCreated());
 
         // Validate the Notification in the database
@@ -123,6 +134,10 @@ public class NotificationResourceIntTest {
         assertThat(testNotification.getDate()).isEqualTo(DEFAULT_DATE);
         assertThat(testNotification.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testNotification.getTitle()).isEqualTo(DEFAULT_TITLE);
+
+        // Validate the Notification in Elasticsearch
+        Notification notificationEs = notificationSearchRepository.findOne(testNotification.getId());
+        assertThat(notificationEs).isEqualToIgnoringGivenFields(testNotification);
     }
 
     @Test
@@ -132,17 +147,52 @@ public class NotificationResourceIntTest {
 
         // Create the Notification with an existing ID
         notification.setId(1L);
-        NotificationDTO notificationDTO = notificationMapper.toDto(notification);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restNotificationMockMvc.perform(post("/api/notifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(notificationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(notification)))
             .andExpect(status().isBadRequest());
 
         // Validate the Notification in the database
         List<Notification> notificationList = notificationRepository.findAll();
         assertThat(notificationList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
+    public void checkDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = notificationRepository.findAll().size();
+        // set the field null
+        notification.setDate(null);
+
+        // Create the Notification, which fails.
+
+        restNotificationMockMvc.perform(post("/api/notifications")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(notification)))
+            .andExpect(status().isBadRequest());
+
+        List<Notification> notificationList = notificationRepository.findAll();
+        assertThat(notificationList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkTypeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = notificationRepository.findAll().size();
+        // set the field null
+        notification.setType(null);
+
+        // Create the Notification, which fails.
+
+        restNotificationMockMvc.perform(post("/api/notifications")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(notification)))
+            .andExpect(status().isBadRequest());
+
+        List<Notification> notificationList = notificationRepository.findAll();
+        assertThat(notificationList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -153,11 +203,10 @@ public class NotificationResourceIntTest {
         notification.setTitle(null);
 
         // Create the Notification, which fails.
-        NotificationDTO notificationDTO = notificationMapper.toDto(notification);
 
         restNotificationMockMvc.perform(post("/api/notifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(notificationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(notification)))
             .andExpect(status().isBadRequest());
 
         List<Notification> notificationList = notificationRepository.findAll();
@@ -209,6 +258,7 @@ public class NotificationResourceIntTest {
     public void updateNotification() throws Exception {
         // Initialize the database
         notificationRepository.saveAndFlush(notification);
+        notificationSearchRepository.save(notification);
         int databaseSizeBeforeUpdate = notificationRepository.findAll().size();
 
         // Update the notification
@@ -219,11 +269,10 @@ public class NotificationResourceIntTest {
             .date(UPDATED_DATE)
             .type(UPDATED_TYPE)
             .title(UPDATED_TITLE);
-        NotificationDTO notificationDTO = notificationMapper.toDto(updatedNotification);
 
         restNotificationMockMvc.perform(put("/api/notifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(notificationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedNotification)))
             .andExpect(status().isOk());
 
         // Validate the Notification in the database
@@ -233,6 +282,10 @@ public class NotificationResourceIntTest {
         assertThat(testNotification.getDate()).isEqualTo(UPDATED_DATE);
         assertThat(testNotification.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testNotification.getTitle()).isEqualTo(UPDATED_TITLE);
+
+        // Validate the Notification in Elasticsearch
+        Notification notificationEs = notificationSearchRepository.findOne(testNotification.getId());
+        assertThat(notificationEs).isEqualToIgnoringGivenFields(testNotification);
     }
 
     @Test
@@ -241,12 +294,11 @@ public class NotificationResourceIntTest {
         int databaseSizeBeforeUpdate = notificationRepository.findAll().size();
 
         // Create the Notification
-        NotificationDTO notificationDTO = notificationMapper.toDto(notification);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restNotificationMockMvc.perform(put("/api/notifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(notificationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(notification)))
             .andExpect(status().isCreated());
 
         // Validate the Notification in the database
@@ -259,6 +311,7 @@ public class NotificationResourceIntTest {
     public void deleteNotification() throws Exception {
         // Initialize the database
         notificationRepository.saveAndFlush(notification);
+        notificationSearchRepository.save(notification);
         int databaseSizeBeforeDelete = notificationRepository.findAll().size();
 
         // Get the notification
@@ -266,9 +319,30 @@ public class NotificationResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
+        // Validate Elasticsearch is empty
+        boolean notificationExistsInEs = notificationSearchRepository.exists(notification.getId());
+        assertThat(notificationExistsInEs).isFalse();
+
         // Validate the database is empty
         List<Notification> notificationList = notificationRepository.findAll();
         assertThat(notificationList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void searchNotification() throws Exception {
+        // Initialize the database
+        notificationRepository.saveAndFlush(notification);
+        notificationSearchRepository.save(notification);
+
+        // Search the notification
+        restNotificationMockMvc.perform(get("/api/_search/notifications?query=id:" + notification.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(notification.getId().intValue())))
+            .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())));
     }
 
     @Test
@@ -284,28 +358,5 @@ public class NotificationResourceIntTest {
         assertThat(notification1).isNotEqualTo(notification2);
         notification1.setId(null);
         assertThat(notification1).isNotEqualTo(notification2);
-    }
-
-    @Test
-    @Transactional
-    public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(NotificationDTO.class);
-        NotificationDTO notificationDTO1 = new NotificationDTO();
-        notificationDTO1.setId(1L);
-        NotificationDTO notificationDTO2 = new NotificationDTO();
-        assertThat(notificationDTO1).isNotEqualTo(notificationDTO2);
-        notificationDTO2.setId(notificationDTO1.getId());
-        assertThat(notificationDTO1).isEqualTo(notificationDTO2);
-        notificationDTO2.setId(2L);
-        assertThat(notificationDTO1).isNotEqualTo(notificationDTO2);
-        notificationDTO1.setId(null);
-        assertThat(notificationDTO1).isNotEqualTo(notificationDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(notificationMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(notificationMapper.fromId(null)).isNull();
     }
 }

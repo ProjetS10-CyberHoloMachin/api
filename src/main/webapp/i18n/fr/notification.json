@@ -1,11 +1,12 @@
 
 {
-    "microApp": {
+    "cyberholocampusApp": {
         "notification" : {
             "home": {
                 "title": "Notifications",
                 "createLabel": "Créer un nouveau Notification",
-                "createOrEditLabel": "Créer ou éditer un Notification"
+                "createOrEditLabel": "Créer ou éditer un Notification",
+                "search": "Recherche pour Notification"
             },
             "created": "Un nouveau Notification a été créé avec l'identifiant {{ param }}",
             "updated": "Le Notification avec l'identifiant {{ param }} a été mis à jour",
@@ -19,7 +20,9 @@
             "date": "Date",
             "type": "Type",
             "title": "Title",
-            "infos": "Infos"
+            "infos": "Infos",
+            "affectation": "Affectation",
+            "building": "Building"
         }
     }
 }

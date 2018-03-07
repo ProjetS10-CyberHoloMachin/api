@@ -13,6 +13,8 @@ export class Notification implements BaseEntity {
         public type?: NotificationType,
         public title?: string,
         public infos?: BaseEntity[],
+        public affectations?: BaseEntity[],
+        public building?: BaseEntity,
     ) {
     }
 }

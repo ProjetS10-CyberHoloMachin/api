@@ -7,6 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import fr.cyberholocampus.app.domain.enumeration.NotificationType;
 @Entity
 @Table(name = "notification")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Document(indexName = "notification")
 public class Notification implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,11 +31,13 @@ public class Notification implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "jhi_date")
+    @NotNull
+    @Column(name = "jhi_date", nullable = false)
     private Instant date;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
+    @Column(name = "jhi_type", nullable = false)
     private NotificationType type;
 
     @NotNull
@@ -44,7 +48,16 @@ public class Notification implements Serializable {
     @OneToMany(mappedBy = "notification")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Info> infos = new HashSet<>();
+    private Set<NotificationData> infos = new HashSet<>();
+
+    @OneToMany(mappedBy = "notification")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Affectation> affectations = new HashSet<>();
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Building building;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -94,29 +107,67 @@ public class Notification implements Serializable {
         this.title = title;
     }
 
-    public Set<Info> getInfos() {
+    public Set<NotificationData> getInfos() {
         return infos;
     }
 
-    public Notification infos(Set<Info> infos) {
-        this.infos = infos;
+    public Notification infos(Set<NotificationData> notificationData) {
+        this.infos = notificationData;
         return this;
     }
 
-    public Notification addInfos(Info info) {
-        this.infos.add(info);
-        info.setNotification(this);
+    public Notification addInfos(NotificationData notificationData) {
+        this.infos.add(notificationData);
+        notificationData.setNotification(this);
         return this;
     }
 
-    public Notification removeInfos(Info info) {
-        this.infos.remove(info);
-        info.setNotification(null);
+    public Notification removeInfos(NotificationData notificationData) {
+        this.infos.remove(notificationData);
+        notificationData.setNotification(null);
         return this;
     }
 
-    public void setInfos(Set<Info> infos) {
-        this.infos = infos;
+    public void setInfos(Set<NotificationData> notificationData) {
+        this.infos = notificationData;
+    }
+
+    public Set<Affectation> getAffectations() {
+        return affectations;
+    }
+
+    public Notification affectations(Set<Affectation> affectations) {
+        this.affectations = affectations;
+        return this;
+    }
+
+    public Notification addAffectation(Affectation affectation) {
+        this.affectations.add(affectation);
+        affectation.setNotification(this);
+        return this;
+    }
+
+    public Notification removeAffectation(Affectation affectation) {
+        this.affectations.remove(affectation);
+        affectation.setNotification(null);
+        return this;
+    }
+
+    public void setAffectations(Set<Affectation> affectations) {
+        this.affectations = affectations;
+    }
+
+    public Building getBuilding() {
+        return building;
+    }
+
+    public Notification building(Building building) {
+        this.building = building;
+        return this;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

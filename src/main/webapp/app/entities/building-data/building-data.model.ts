@@ -4,8 +4,8 @@ export class BuildingData implements BaseEntity {
     constructor(
         public id?: number,
         public description?: string,
-        public buildingId?: number,
-        public dataDefinitionId?: number,
+        public label?: string,
+        public building?: BaseEntity,
     ) {
     }
 }

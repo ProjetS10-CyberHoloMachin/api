@@ -1,6 +1,6 @@
 package fr.cyberholocampus.app.web.rest;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 import fr.cyberholocampus.app.domain.User;
 import fr.cyberholocampus.app.repository.UserRepository;
 import fr.cyberholocampus.app.security.jwt.TokenProvider;
@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.not;
  * @see UserJWTController
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 public class UserJWTControllerIntTest {
 
     @Autowired
