@@ -4,19 +4,39 @@
         {
             "relationshipType": "one-to-many",
             "relationshipName": "infos",
-            "otherEntityName": "info",
+            "otherEntityName": "notificationData",
             "otherEntityRelationshipName": "notification"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipValidateRules": "required",
+            "relationshipName": "affectation",
+            "otherEntityName": "affectation",
+            "otherEntityRelationshipName": "notification"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "building",
+            "otherEntityName": "building",
+            "otherEntityField": "name"
         }
     ],
     "fields": [
         {
             "fieldName": "date",
-            "fieldType": "Instant"
+            "fieldType": "Instant",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "type",
             "fieldType": "NotificationType",
-            "fieldValues": "INFO,ERROR,CHECK"
+            "fieldValues": "INFO,ERROR,CHECK",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "title",
@@ -28,10 +48,10 @@
             "fieldValidateRulesMinlength": 3
         }
     ],
-    "changelogDate": "20180302091222",
+    "changelogDate": "20180307134032",
     "entityTableName": "notification",
-    "dto": "mapstruct",
-    "pagination": "pagination",
+    "dto": "no",
+    "pagination": "infinite-scroll",
     "service": "no",
     "jpaMetamodelFiltering": false
 }

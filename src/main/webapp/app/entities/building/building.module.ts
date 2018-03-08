@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { MicroSharedModule } from '../../shared';
+import { CyberholocampusSharedModule } from '../../shared';
 import {
     BuildingService,
     BuildingPopupService,
@@ -13,7 +13,6 @@ import {
     BuildingDeleteDialogComponent,
     buildingRoute,
     buildingPopupRoute,
-    BuildingResolvePagingParams,
 } from './';
 
 const ENTITY_STATES = [
@@ -23,7 +22,7 @@ const ENTITY_STATES = [
 
 @NgModule({
     imports: [
-        MicroSharedModule,
+        CyberholocampusSharedModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [
@@ -44,8 +43,7 @@ const ENTITY_STATES = [
     providers: [
         BuildingService,
         BuildingPopupService,
-        BuildingResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MicroBuildingModule {}
+export class CyberholocampusBuildingModule {}

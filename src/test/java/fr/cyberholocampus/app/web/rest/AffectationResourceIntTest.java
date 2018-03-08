@@ -1,13 +1,11 @@
 package fr.cyberholocampus.app.web.rest;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 
 import fr.cyberholocampus.app.domain.Affectation;
-import fr.cyberholocampus.app.domain.Notification;
 import fr.cyberholocampus.app.domain.User;
 import fr.cyberholocampus.app.repository.AffectationRepository;
-import fr.cyberholocampus.app.service.dto.AffectationDTO;
-import fr.cyberholocampus.app.service.mapper.AffectationMapper;
+import fr.cyberholocampus.app.repository.search.AffectationSearchRepository;
 import fr.cyberholocampus.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -39,14 +37,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see AffectationResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 public class AffectationResourceIntTest {
 
     @Autowired
     private AffectationRepository affectationRepository;
 
     @Autowired
-    private AffectationMapper affectationMapper;
+    private AffectationSearchRepository affectationSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -67,7 +65,7 @@ public class AffectationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final AffectationResource affectationResource = new AffectationResource(affectationRepository, affectationMapper);
+        final AffectationResource affectationResource = new AffectationResource(affectationRepository, affectationSearchRepository);
         this.restAffectationMockMvc = MockMvcBuilders.standaloneSetup(affectationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -84,11 +82,6 @@ public class AffectationResourceIntTest {
     public static Affectation createEntity(EntityManager em) {
         Affectation affectation = new Affectation();
         // Add required entity
-        Notification notification = NotificationResourceIntTest.createEntity(em);
-        em.persist(notification);
-        em.flush();
-        affectation.setNotification(notification);
-        // Add required entity
         User user = UserResourceIntTest.createEntity(em);
         em.persist(user);
         em.flush();
@@ -98,6 +91,7 @@ public class AffectationResourceIntTest {
 
     @Before
     public void initTest() {
+        affectationSearchRepository.deleteAll();
         affectation = createEntity(em);
     }
 
@@ -107,16 +101,19 @@ public class AffectationResourceIntTest {
         int databaseSizeBeforeCreate = affectationRepository.findAll().size();
 
         // Create the Affectation
-        AffectationDTO affectationDTO = affectationMapper.toDto(affectation);
         restAffectationMockMvc.perform(post("/api/affectations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(affectationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(affectation)))
             .andExpect(status().isCreated());
 
         // Validate the Affectation in the database
         List<Affectation> affectationList = affectationRepository.findAll();
         assertThat(affectationList).hasSize(databaseSizeBeforeCreate + 1);
         Affectation testAffectation = affectationList.get(affectationList.size() - 1);
+
+        // Validate the Affectation in Elasticsearch
+        Affectation affectationEs = affectationSearchRepository.findOne(testAffectation.getId());
+        assertThat(affectationEs).isEqualToIgnoringGivenFields(testAffectation);
     }
 
     @Test
@@ -126,12 +123,11 @@ public class AffectationResourceIntTest {
 
         // Create the Affectation with an existing ID
         affectation.setId(1L);
-        AffectationDTO affectationDTO = affectationMapper.toDto(affectation);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restAffectationMockMvc.perform(post("/api/affectations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(affectationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(affectation)))
             .andExpect(status().isBadRequest());
 
         // Validate the Affectation in the database
@@ -178,23 +174,27 @@ public class AffectationResourceIntTest {
     public void updateAffectation() throws Exception {
         // Initialize the database
         affectationRepository.saveAndFlush(affectation);
+        affectationSearchRepository.save(affectation);
         int databaseSizeBeforeUpdate = affectationRepository.findAll().size();
 
         // Update the affectation
         Affectation updatedAffectation = affectationRepository.findOne(affectation.getId());
         // Disconnect from session so that the updates on updatedAffectation are not directly saved in db
         em.detach(updatedAffectation);
-        AffectationDTO affectationDTO = affectationMapper.toDto(updatedAffectation);
 
         restAffectationMockMvc.perform(put("/api/affectations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(affectationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedAffectation)))
             .andExpect(status().isOk());
 
         // Validate the Affectation in the database
         List<Affectation> affectationList = affectationRepository.findAll();
         assertThat(affectationList).hasSize(databaseSizeBeforeUpdate);
         Affectation testAffectation = affectationList.get(affectationList.size() - 1);
+
+        // Validate the Affectation in Elasticsearch
+        Affectation affectationEs = affectationSearchRepository.findOne(testAffectation.getId());
+        assertThat(affectationEs).isEqualToIgnoringGivenFields(testAffectation);
     }
 
     @Test
@@ -203,12 +203,11 @@ public class AffectationResourceIntTest {
         int databaseSizeBeforeUpdate = affectationRepository.findAll().size();
 
         // Create the Affectation
-        AffectationDTO affectationDTO = affectationMapper.toDto(affectation);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restAffectationMockMvc.perform(put("/api/affectations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(affectationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(affectation)))
             .andExpect(status().isCreated());
 
         // Validate the Affectation in the database
@@ -221,6 +220,7 @@ public class AffectationResourceIntTest {
     public void deleteAffectation() throws Exception {
         // Initialize the database
         affectationRepository.saveAndFlush(affectation);
+        affectationSearchRepository.save(affectation);
         int databaseSizeBeforeDelete = affectationRepository.findAll().size();
 
         // Get the affectation
@@ -228,9 +228,27 @@ public class AffectationResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
+        // Validate Elasticsearch is empty
+        boolean affectationExistsInEs = affectationSearchRepository.exists(affectation.getId());
+        assertThat(affectationExistsInEs).isFalse();
+
         // Validate the database is empty
         List<Affectation> affectationList = affectationRepository.findAll();
         assertThat(affectationList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void searchAffectation() throws Exception {
+        // Initialize the database
+        affectationRepository.saveAndFlush(affectation);
+        affectationSearchRepository.save(affectation);
+
+        // Search the affectation
+        restAffectationMockMvc.perform(get("/api/_search/affectations?query=id:" + affectation.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(affectation.getId().intValue())));
     }
 
     @Test
@@ -246,28 +264,5 @@ public class AffectationResourceIntTest {
         assertThat(affectation1).isNotEqualTo(affectation2);
         affectation1.setId(null);
         assertThat(affectation1).isNotEqualTo(affectation2);
-    }
-
-    @Test
-    @Transactional
-    public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(AffectationDTO.class);
-        AffectationDTO affectationDTO1 = new AffectationDTO();
-        affectationDTO1.setId(1L);
-        AffectationDTO affectationDTO2 = new AffectationDTO();
-        assertThat(affectationDTO1).isNotEqualTo(affectationDTO2);
-        affectationDTO2.setId(affectationDTO1.getId());
-        assertThat(affectationDTO1).isEqualTo(affectationDTO2);
-        affectationDTO2.setId(2L);
-        assertThat(affectationDTO1).isNotEqualTo(affectationDTO2);
-        affectationDTO1.setId(null);
-        assertThat(affectationDTO1).isNotEqualTo(affectationDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(affectationMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(affectationMapper.fromId(null)).isNull();
     }
 }

@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { BuildingDataDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/building-data/building-data-delete-dialog.component';
 import { BuildingDataService } from '../../../../../../main/webapp/app/entities/building-data/building-data.service';
 
@@ -19,7 +19,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [BuildingDataDeleteDialogComponent],
                 providers: [
                     BuildingDataService

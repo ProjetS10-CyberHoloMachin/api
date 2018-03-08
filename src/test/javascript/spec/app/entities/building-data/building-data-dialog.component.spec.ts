@@ -5,12 +5,11 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { BuildingDataDialogComponent } from '../../../../../../main/webapp/app/entities/building-data/building-data-dialog.component';
 import { BuildingDataService } from '../../../../../../main/webapp/app/entities/building-data/building-data.service';
 import { BuildingData } from '../../../../../../main/webapp/app/entities/building-data/building-data.model';
 import { BuildingService } from '../../../../../../main/webapp/app/entities/building';
-import { BuildingDataDefinitionService } from '../../../../../../main/webapp/app/entities/building-data-definition';
 
 describe('Component Tests', () => {
 
@@ -23,11 +22,10 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [BuildingDataDialogComponent],
                 providers: [
                     BuildingService,
-                    BuildingDataDefinitionService,
                     BuildingDataService
                 ]
             })

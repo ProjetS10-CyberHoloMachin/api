@@ -1,7 +1,7 @@
 package fr.cyberholocampus.app.web.rest;
 
 import fr.cyberholocampus.app.config.Constants;
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 import fr.cyberholocampus.app.domain.Authority;
 import fr.cyberholocampus.app.domain.User;
 import fr.cyberholocampus.app.repository.AuthorityRepository;
@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see AccountResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 public class AccountResourceIntTest {
 
     @Autowired

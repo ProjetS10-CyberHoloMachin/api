@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { NotificationDetailComponent } from '../../../../../../main/webapp/app/entities/notification/notification-detail.component';
 import { NotificationService } from '../../../../../../main/webapp/app/entities/notification/notification.service';
 import { Notification } from '../../../../../../main/webapp/app/entities/notification/notification.model';
@@ -17,7 +17,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [NotificationDetailComponent],
                 providers: [
                     NotificationService

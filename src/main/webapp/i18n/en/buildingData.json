@@ -1,0 +1,25 @@
+
+{
+    "cyberholocampusApp": {
+        "buildingData" : {
+            "home": {
+                "title": "Building Data",
+                "createLabel": "Create a new Building Data",
+                "createOrEditLabel": "Create or edit a Building Data",
+                "search": "Search for Building Data"
+            },
+            "created": "A new Building Data is created with identifier {{ param }}",
+            "updated": "A Building Data is updated with identifier {{ param }}",
+            "deleted": "A Building Data is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Building Data {{ id }}?"
+            },
+            "detail": {
+                "title": "Building Data"
+            },
+            "description": "Description",
+            "label": "Label",
+            "building": "Building"
+        }
+    }
+}

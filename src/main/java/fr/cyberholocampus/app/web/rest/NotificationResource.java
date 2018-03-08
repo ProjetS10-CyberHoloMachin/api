@@ -4,11 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import fr.cyberholocampus.app.domain.Notification;
 
 import fr.cyberholocampus.app.repository.NotificationRepository;
+import fr.cyberholocampus.app.repository.search.NotificationSearchRepository;
 import fr.cyberholocampus.app.web.rest.errors.BadRequestAlertException;
 import fr.cyberholocampus.app.web.rest.util.HeaderUtil;
 import fr.cyberholocampus.app.web.rest.util.PaginationUtil;
-import fr.cyberholocampus.app.service.dto.NotificationDTO;
-import fr.cyberholocampus.app.service.mapper.NotificationMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,10 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Notification.
@@ -39,30 +42,29 @@ public class NotificationResource {
 
     private final NotificationRepository notificationRepository;
 
-    private final NotificationMapper notificationMapper;
+    private final NotificationSearchRepository notificationSearchRepository;
 
-    public NotificationResource(NotificationRepository notificationRepository, NotificationMapper notificationMapper) {
+    public NotificationResource(NotificationRepository notificationRepository, NotificationSearchRepository notificationSearchRepository) {
         this.notificationRepository = notificationRepository;
-        this.notificationMapper = notificationMapper;
+        this.notificationSearchRepository = notificationSearchRepository;
     }
 
     /**
      * POST  /notifications : Create a new notification.
      *
-     * @param notificationDTO the notificationDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new notificationDTO, or with status 400 (Bad Request) if the notification has already an ID
+     * @param notification the notification to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new notification, or with status 400 (Bad Request) if the notification has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/notifications")
     @Timed
-    public ResponseEntity<NotificationDTO> createNotification(@Valid @RequestBody NotificationDTO notificationDTO) throws URISyntaxException {
-        log.debug("REST request to save Notification : {}", notificationDTO);
-        if (notificationDTO.getId() != null) {
+    public ResponseEntity<Notification> createNotification(@Valid @RequestBody Notification notification) throws URISyntaxException {
+        log.debug("REST request to save Notification : {}", notification);
+        if (notification.getId() != null) {
             throw new BadRequestAlertException("A new notification cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Notification notification = notificationMapper.toEntity(notificationDTO);
-        notification = notificationRepository.save(notification);
-        NotificationDTO result = notificationMapper.toDto(notification);
+        Notification result = notificationRepository.save(notification);
+        notificationSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/notifications/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -71,24 +73,23 @@ public class NotificationResource {
     /**
      * PUT  /notifications : Updates an existing notification.
      *
-     * @param notificationDTO the notificationDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated notificationDTO,
-     * or with status 400 (Bad Request) if the notificationDTO is not valid,
-     * or with status 500 (Internal Server Error) if the notificationDTO couldn't be updated
+     * @param notification the notification to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated notification,
+     * or with status 400 (Bad Request) if the notification is not valid,
+     * or with status 500 (Internal Server Error) if the notification couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/notifications")
     @Timed
-    public ResponseEntity<NotificationDTO> updateNotification(@Valid @RequestBody NotificationDTO notificationDTO) throws URISyntaxException {
-        log.debug("REST request to update Notification : {}", notificationDTO);
-        if (notificationDTO.getId() == null) {
-            return createNotification(notificationDTO);
+    public ResponseEntity<Notification> updateNotification(@Valid @RequestBody Notification notification) throws URISyntaxException {
+        log.debug("REST request to update Notification : {}", notification);
+        if (notification.getId() == null) {
+            return createNotification(notification);
         }
-        Notification notification = notificationMapper.toEntity(notificationDTO);
-        notification = notificationRepository.save(notification);
-        NotificationDTO result = notificationMapper.toDto(notification);
+        Notification result = notificationRepository.save(notification);
+        notificationSearchRepository.save(result);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, notificationDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, notification.getId().toString()))
             .body(result);
     }
 
@@ -100,32 +101,31 @@ public class NotificationResource {
      */
     @GetMapping("/notifications")
     @Timed
-    public ResponseEntity<List<NotificationDTO>> getAllNotifications(Pageable pageable) {
+    public ResponseEntity<List<Notification>> getAllNotifications(Pageable pageable) {
         log.debug("REST request to get a page of Notifications");
         Page<Notification> page = notificationRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/notifications");
-        return new ResponseEntity<>(notificationMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
      * GET  /notifications/:id : get the "id" notification.
      *
-     * @param id the id of the notificationDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the notificationDTO, or with status 404 (Not Found)
+     * @param id the id of the notification to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the notification, or with status 404 (Not Found)
      */
     @GetMapping("/notifications/{id}")
     @Timed
-    public ResponseEntity<NotificationDTO> getNotification(@PathVariable Long id) {
+    public ResponseEntity<Notification> getNotification(@PathVariable Long id) {
         log.debug("REST request to get Notification : {}", id);
         Notification notification = notificationRepository.findOne(id);
-        NotificationDTO notificationDTO = notificationMapper.toDto(notification);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(notificationDTO));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(notification));
     }
 
     /**
      * DELETE  /notifications/:id : delete the "id" notification.
      *
-     * @param id the id of the notificationDTO to delete
+     * @param id the id of the notification to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/notifications/{id}")
@@ -133,6 +133,25 @@ public class NotificationResource {
     public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
         log.debug("REST request to delete Notification : {}", id);
         notificationRepository.delete(id);
+        notificationSearchRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/notifications?query=:query : search for the notification corresponding
+     * to the query.
+     *
+     * @param query the query of the notification search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/notifications")
+    @Timed
+    public ResponseEntity<List<Notification>> searchNotifications(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Notifications for query {}", query);
+        Page<Notification> page = notificationSearchRepository.search(queryStringQuery(query), pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/notifications");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 }

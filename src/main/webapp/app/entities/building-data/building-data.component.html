@@ -1,40 +1,49 @@
 <div>
     <h2>
-        <span jhiTranslate="microApp.buildingData.home.title">Building Data</span>
+        <span jhiTranslate="cyberholocampusApp.buildingData.home.title">Building Data</span>
         <button class="btn btn-primary float-right jh-create-entity create-building-data" [routerLink]="['/', { outlets: { popup: ['building-data-new'] } }]">
             <span class="fa fa-plus"></span>
-            <span  jhiTranslate="microApp.buildingData.home.createLabel">
+            <span class="hidden-sm-down"  jhiTranslate="cyberholocampusApp.buildingData.home.createLabel">
             Create new Building Data
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
     <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'cyberholocampusApp.buildingData.home.search' | translate }}">
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
     <br/>
     <div class="table-responsive" *ngIf="buildingData">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="description"><span jhiTranslate="microApp.buildingData.description">Description</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="buildingName"><span jhiTranslate="microApp.buildingData.building">Building</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="dataDefinitionLabel"><span jhiTranslate="microApp.buildingData.dataDefinition">Data Definition</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="description"><span jhiTranslate="cyberholocampusApp.buildingData.description">Description</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="label"><span jhiTranslate="cyberholocampusApp.buildingData.label">Label</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="building.name"><span jhiTranslate="cyberholocampusApp.buildingData.building">Building</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let buildingData of buildingData ;trackBy: trackId">
                 <td><a [routerLink]="['../building-data', buildingData.id ]">{{buildingData.id}}</a></td>
                 <td>{{buildingData.description}}</td>
+                <td>{{buildingData.label}}</td>
                 <td>
-                    <div *ngIf="buildingData.buildingId">
-                        <a [routerLink]="['../building', buildingData.buildingId  ]" >{{buildingData.buildingName}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="buildingData.dataDefinitionId">
-                        <a [routerLink]="['../building-data-definition', buildingData.dataDefinitionId  ]" >{{buildingData.dataDefinitionLabel}}</a>
+                    <div *ngIf="buildingData.building">
+                        <a [routerLink]="['../building', buildingData.building?.id ]" >{{buildingData.building?.name}}</a>
                     </div>
                 </td>
                 <td class="text-right">
@@ -66,13 +75,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
-    <div *ngIf="buildingData && buildingData.length">
-        <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        </div>
-        <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
-        </div>
     </div>
 </div>

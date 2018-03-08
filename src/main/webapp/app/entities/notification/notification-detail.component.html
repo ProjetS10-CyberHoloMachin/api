@@ -1,20 +1,26 @@
 
 <div *ngIf="notification">
-    <h2><span jhiTranslate="microApp.notification.detail.title">Notification</span> {{notification.id}}</h2>
+    <h2><span jhiTranslate="cyberholocampusApp.notification.detail.title">Notification</span> {{notification.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="microApp.notification.date">Date</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.notification.date">Date</span></dt>
         <dd>
             <span>{{notification.date | date:'medium'}}</span>
         </dd>
-        <dt><span jhiTranslate="microApp.notification.type">Type</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.notification.type">Type</span></dt>
         <dd>
-            <span jhiTranslate="{{'microApp.NotificationType.' + notification.type}}">{{notification.type}}</span>
+            <span jhiTranslate="{{'cyberholocampusApp.NotificationType.' + notification.type}}">{{notification.type}}</span>
         </dd>
-        <dt><span jhiTranslate="microApp.notification.title">Title</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.notification.title">Title</span></dt>
         <dd>
             <span>{{notification.title}}</span>
+        </dd>
+        <dt><span jhiTranslate="cyberholocampusApp.notification.building">Building</span></dt>
+        <dd>
+            <div *ngIf="notification.building">
+                <a [routerLink]="['/building', notification.building?.id]">{{notification.building?.name}}</a>
+            </div>
         </dd>
     </dl>
 

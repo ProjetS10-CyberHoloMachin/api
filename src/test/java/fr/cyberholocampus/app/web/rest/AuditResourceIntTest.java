@@ -1,6 +1,6 @@
 package fr.cyberholocampus.app.web.rest;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 import fr.cyberholocampus.app.config.audit.AuditEventConverter;
 import fr.cyberholocampus.app.domain.PersistentAuditEvent;
 import fr.cyberholocampus.app.repository.PersistenceAuditEventRepository;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see AuditResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 @Transactional
 public class AuditResourceIntTest {
 

@@ -1,6 +1,6 @@
 package fr.cyberholocampus.app.service;
 
-import fr.cyberholocampus.app.MicroApp;
+import fr.cyberholocampus.app.CyberholocampusApp;
 import fr.cyberholocampus.app.config.Constants;
 import fr.cyberholocampus.app.domain.User;
 import fr.cyberholocampus.app.repository.UserRepository;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @see UserService
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MicroApp.class)
+@SpringBootTest(classes = CyberholocampusApp.class)
 @Transactional
 public class UserServiceIntTest {
 

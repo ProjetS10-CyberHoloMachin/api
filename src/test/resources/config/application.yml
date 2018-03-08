@@ -17,19 +17,19 @@ eureka:
     client:
         enabled: true
     instance:
-        appname: micro
-        instanceId: micro:${spring.application.instance-id:${random.value}}
+        appname: cyberholocampus
+        instanceId: cyberholocampus:${spring.application.instance-id:${random.value}}
 
 spring:
     application:
-        name: micro
+        name: cyberholocampus
     jackson:
         serialization.write_dates_as_timestamps: false
     cache:
         type: simple
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:h2:mem:micro;DB_CLOSE_DELAY=-1
+        url: jdbc:h2:mem:cyberholocampus;DB_CLOSE_DELAY=-1
         name:
         username:
         password:
@@ -49,6 +49,14 @@ spring:
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
             hibernate.hbm2ddl.auto: validate
+    data:
+        elasticsearch:
+            cluster-name:
+            cluster-nodes:
+            properties:
+                path:
+                    logs: target/elasticsearch/log
+                    data: target/elasticsearch/data
     mail:
         host: localhost
     messages:
@@ -94,7 +102,7 @@ jhipster:
     security:
         authentication:
             jwt:
-                secret: fcb3550a81042ef902c81648ad751d540b24ccd2
+                secret: b57c93edfb302d2e4cf158a2c28ed3f07287847c
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration

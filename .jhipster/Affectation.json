@@ -4,23 +4,22 @@
         {
             "relationshipType": "many-to-one",
             "relationshipValidateRules": "required",
-            "relationshipName": "notification",
-            "otherEntityName": "notification",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
             "relationshipName": "user",
             "otherEntityName": "user",
             "otherEntityField": "login"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "notification",
+            "otherEntityName": "notification",
+            "otherEntityField": "title"
         }
     ],
     "fields": [],
-    "changelogDate": "20180302091225",
+    "changelogDate": "20180307134034",
     "entityTableName": "affectation",
-    "dto": "mapstruct",
-    "pagination": "pagination",
+    "dto": "no",
+    "pagination": "infinite-scroll",
     "service": "no",
     "jpaMetamodelFiltering": false
 }

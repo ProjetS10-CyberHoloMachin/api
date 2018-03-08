@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { AffectationDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/affectation/affectation-delete-dialog.component';
 import { AffectationService } from '../../../../../../main/webapp/app/entities/affectation/affectation.service';
 
@@ -19,7 +19,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [AffectationDeleteDialogComponent],
                 providers: [
                     AffectationService

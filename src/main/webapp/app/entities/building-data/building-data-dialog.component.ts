@@ -10,7 +10,6 @@ import { BuildingData } from './building-data.model';
 import { BuildingDataPopupService } from './building-data-popup.service';
 import { BuildingDataService } from './building-data.service';
 import { Building, BuildingService } from '../building';
-import { BuildingDataDefinition, BuildingDataDefinitionService } from '../building-data-definition';
 
 @Component({
     selector: 'jhi-building-data-dialog',
@@ -23,14 +22,11 @@ export class BuildingDataDialogComponent implements OnInit {
 
     buildings: Building[];
 
-    buildingdatadefinitions: BuildingDataDefinition[];
-
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private buildingDataService: BuildingDataService,
         private buildingService: BuildingService,
-        private buildingDataDefinitionService: BuildingDataDefinitionService,
         private eventManager: JhiEventManager
     ) {
     }
@@ -39,8 +35,6 @@ export class BuildingDataDialogComponent implements OnInit {
         this.isSaving = false;
         this.buildingService.query()
             .subscribe((res: HttpResponse<Building[]>) => { this.buildings = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
-        this.buildingDataDefinitionService.query()
-            .subscribe((res: HttpResponse<BuildingDataDefinition[]>) => { this.buildingdatadefinitions = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -78,10 +72,6 @@ export class BuildingDataDialogComponent implements OnInit {
     }
 
     trackBuildingById(index: number, item: Building) {
-        return item.id;
-    }
-
-    trackBuildingDataDefinitionById(index: number, item: BuildingDataDefinition) {
         return item.id;
     }
 }

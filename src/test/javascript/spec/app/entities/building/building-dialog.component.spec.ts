@@ -5,7 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { BuildingDialogComponent } from '../../../../../../main/webapp/app/entities/building/building-dialog.component';
 import { BuildingService } from '../../../../../../main/webapp/app/entities/building/building.service';
 import { Building } from '../../../../../../main/webapp/app/entities/building/building.model';
@@ -21,7 +21,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [BuildingDialogComponent],
                 providers: [
                     BuildingService

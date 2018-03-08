@@ -11,15 +11,15 @@ public final class HeaderUtil {
 
     private static final Logger log = LoggerFactory.getLogger(HeaderUtil.class);
 
-    private static final String APPLICATION_NAME = "microApp";
+    private static final String APPLICATION_NAME = "cyberholocampusApp";
 
     private HeaderUtil() {
     }
 
     public static HttpHeaders createAlert(String message, String param) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-microApp-alert", message);
-        headers.add("X-microApp-params", param);
+        headers.add("X-cyberholocampusApp-alert", message);
+        headers.add("X-cyberholocampusApp-params", param);
         return headers;
     }
 
@@ -38,8 +38,8 @@ public final class HeaderUtil {
     public static HttpHeaders createFailureAlert(String entityName, String errorKey, String defaultMessage) {
         log.error("Entity processing failed, {}", defaultMessage);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-microApp-error", "error." + errorKey);
-        headers.add("X-microApp-params", entityName);
+        headers.add("X-cyberholocampusApp-error", "error." + errorKey);
+        headers.add("X-cyberholocampusApp-params", entityName);
         return headers;
     }
 }

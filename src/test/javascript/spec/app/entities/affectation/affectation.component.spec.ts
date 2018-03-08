@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { AffectationComponent } from '../../../../../../main/webapp/app/entities/affectation/affectation.component';
 import { AffectationService } from '../../../../../../main/webapp/app/entities/affectation/affectation.service';
 import { Affectation } from '../../../../../../main/webapp/app/entities/affectation/affectation.model';
@@ -17,7 +17,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [AffectationComponent],
                 providers: [
                     AffectationService

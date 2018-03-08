@@ -12,7 +12,7 @@ import { BuildingComponent } from '../entities/building/building.component';
     selector: 'jhi-home',
     templateUrl: './home.component.html',
     styleUrls: [
-        'home.css'
+        'home.scss'
     ]
 
 })

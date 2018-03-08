@@ -9,8 +9,8 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Affectation } from './affectation.model';
 import { AffectationPopupService } from './affectation-popup.service';
 import { AffectationService } from './affectation.service';
-import { Notification, NotificationService } from '../notification';
 import { User, UserService } from '../../shared';
+import { Notification, NotificationService } from '../notification';
 
 @Component({
     selector: 'jhi-affectation-dialog',
@@ -21,26 +21,26 @@ export class AffectationDialogComponent implements OnInit {
     affectation: Affectation;
     isSaving: boolean;
 
-    notifications: Notification[];
-
     users: User[];
+
+    notifications: Notification[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private affectationService: AffectationService,
-        private notificationService: NotificationService,
         private userService: UserService,
+        private notificationService: NotificationService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.notificationService.query()
-            .subscribe((res: HttpResponse<Notification[]>) => { this.notifications = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.userService.query()
             .subscribe((res: HttpResponse<User[]>) => { this.users = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+        this.notificationService.query()
+            .subscribe((res: HttpResponse<Notification[]>) => { this.notifications = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -77,11 +77,11 @@ export class AffectationDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackNotificationById(index: number, item: Notification) {
+    trackUserById(index: number, item: User) {
         return item.id;
     }
 
-    trackUserById(index: number, item: User) {
+    trackNotificationById(index: number, item: Notification) {
         return item.id;
     }
 }

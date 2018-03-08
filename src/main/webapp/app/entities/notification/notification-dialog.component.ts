@@ -4,11 +4,12 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { Notification } from './notification.model';
 import { NotificationPopupService } from './notification-popup.service';
 import { NotificationService } from './notification.service';
+import { Building, BuildingService } from '../building';
 
 @Component({
     selector: 'jhi-notification-dialog',
@@ -19,15 +20,21 @@ export class NotificationDialogComponent implements OnInit {
     notification: Notification;
     isSaving: boolean;
 
+    buildings: Building[];
+
     constructor(
         public activeModal: NgbActiveModal,
+        private jhiAlertService: JhiAlertService,
         private notificationService: NotificationService,
+        private buildingService: BuildingService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
+        this.buildingService.query()
+            .subscribe((res: HttpResponse<Building[]>) => { this.buildings = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -58,6 +65,14 @@ export class NotificationDialogComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
+    }
+
+    private onError(error: any) {
+        this.jhiAlertService.error(error.message, null, null);
+    }
+
+    trackBuildingById(index: number, item: Building) {
+        return item.id;
     }
 }
 

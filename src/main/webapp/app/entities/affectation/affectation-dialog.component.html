@@ -1,7 +1,7 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
     <div class="modal-header">
-        <h4 class="modal-title" id="myAffectationLabel" jhiTranslate="microApp.affectation.home.createOrEditLabel">Create or edit a Affectation</h4>
+        <h4 class="modal-title" id="myAffectationLabel" jhiTranslate="cyberholocampusApp.affectation.home.createOrEditLabel">Create or edit a Affectation</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
@@ -14,23 +14,10 @@
         </div>
 
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="microApp.affectation.notification" for="field_notification">Notification</label>
-            <select class="form-control" id="field_notification" name="notification" [(ngModel)]="affectation.notificationId"  required>
-                <option *ngIf="!editForm.value.notification" [ngValue]="null" selected></option>
-                <option [ngValue]="notificationOption.id" *ngFor="let notificationOption of notifications; trackBy: trackNotificationById">{{notificationOption.id}}</option>
-            </select>
-        </div>
-        <div [hidden]="!(editForm.controls.notification?.dirty && editForm.controls.notification?.invalid)">
-            <small class="form-text text-danger"
-                [hidden]="!editForm.controls.notification?.errors?.required" jhiTranslate="entity.validation.required">
-                This field is required.
-            </small>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="microApp.affectation.user" for="field_user">User</label>
-            <select class="form-control" id="field_user" name="user" [(ngModel)]="affectation.userId"  required>
+            <label class="form-control-label" jhiTranslate="cyberholocampusApp.affectation.user" for="field_user">User</label>
+            <select class="form-control" id="field_user" name="user" [(ngModel)]="affectation.user"  required>
                 <option *ngIf="!editForm.value.user" [ngValue]="null" selected></option>
-                <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
+                <option [ngValue]="userOption.id === affectation.user?.id ? affectation.user : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
             </select>
         </div>
         <div [hidden]="!(editForm.controls.user?.dirty && editForm.controls.user?.invalid)">
@@ -38,6 +25,13 @@
                 [hidden]="!editForm.controls.user?.errors?.required" jhiTranslate="entity.validation.required">
                 This field is required.
             </small>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="cyberholocampusApp.affectation.notification" for="field_notification">Notification</label>
+            <select class="form-control" id="field_notification" name="notification" [(ngModel)]="affectation.notification" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="notificationOption.id === affectation.notification?.id ? affectation.notification : notificationOption" *ngFor="let notificationOption of notifications; trackBy: trackNotificationById">{{notificationOption.title}}</option>
+            </select>
         </div>
     </div>
     <div class="modal-footer">

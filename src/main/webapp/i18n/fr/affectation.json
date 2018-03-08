@@ -1,11 +1,12 @@
 
 {
-    "microApp": {
+    "cyberholocampusApp": {
         "affectation" : {
             "home": {
                 "title": "Affectations",
                 "createLabel": "Créer un nouveau Affectation",
-                "createOrEditLabel": "Créer ou éditer un Affectation"
+                "createOrEditLabel": "Créer ou éditer un Affectation",
+                "search": "Recherche pour Affectation"
             },
             "created": "Un nouveau Affectation a été créé avec l'identifiant {{ param }}",
             "updated": "Le Affectation avec l'identifiant {{ param }} a été mis à jour",
@@ -16,8 +17,8 @@
             "detail": {
                 "title": "Affectation"
             },
-            "notification": "Notification",
-            "user": "User"
+            "user": "User",
+            "notification": "Notification"
         }
     }
 }

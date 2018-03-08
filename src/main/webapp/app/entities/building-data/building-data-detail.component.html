@@ -1,23 +1,21 @@
 
 <div *ngIf="buildingData">
-    <h2><span jhiTranslate="microApp.buildingData.detail.title">Building Data</span> {{buildingData.id}}</h2>
+    <h2><span jhiTranslate="cyberholocampusApp.buildingData.detail.title">Building Data</span> {{buildingData.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="microApp.buildingData.description">Description</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.buildingData.description">Description</span></dt>
         <dd>
             <span>{{buildingData.description}}</span>
         </dd>
-        <dt><span jhiTranslate="microApp.buildingData.building">Building</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.buildingData.label">Label</span></dt>
         <dd>
-            <div *ngIf="buildingData.buildingId">
-                <a [routerLink]="['/building', buildingData.buildingId]">{{buildingData.buildingName}}</a>
-            </div>
+            <span>{{buildingData.label}}</span>
         </dd>
-        <dt><span jhiTranslate="microApp.buildingData.dataDefinition">Data Definition</span></dt>
+        <dt><span jhiTranslate="cyberholocampusApp.buildingData.building">Building</span></dt>
         <dd>
-            <div *ngIf="buildingData.dataDefinitionId">
-                <a [routerLink]="['/building-data-definition', buildingData.dataDefinitionId]">{{buildingData.dataDefinitionLabel}}</a>
+            <div *ngIf="buildingData.building">
+                <a [routerLink]="['/building', buildingData.building?.id]">{{buildingData.building?.name}}</a>
             </div>
         </dd>
     </dl>

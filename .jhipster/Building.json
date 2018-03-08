@@ -1,6 +1,19 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "data",
+            "otherEntityName": "buildingData",
+            "otherEntityRelationshipName": "building"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "notification",
+            "otherEntityName": "notification",
+            "otherEntityRelationshipName": "building"
+        }
+    ],
     "fields": [
         {
             "fieldName": "name",
@@ -12,10 +25,10 @@
             "fieldValidateRulesMinlength": 3
         }
     ],
-    "changelogDate": "20180302091226",
+    "changelogDate": "20180307134035",
     "entityTableName": "building",
-    "dto": "mapstruct",
-    "pagination": "pagination",
+    "dto": "no",
+    "pagination": "infinite-scroll",
     "service": "no",
     "jpaMetamodelFiltering": false
 }

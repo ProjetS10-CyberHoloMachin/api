@@ -2,8 +2,8 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import {
-    MicroSharedLibsModule,
-    MicroSharedCommonModule,
+    CyberholocampusSharedLibsModule,
+    CyberholocampusSharedCommonModule,
     CSRFService,
     AuthServerProvider,
     AccountService,
@@ -18,8 +18,8 @@ import {
 
 @NgModule({
     imports: [
-        MicroSharedLibsModule,
-        MicroSharedCommonModule
+        CyberholocampusSharedLibsModule,
+        CyberholocampusSharedCommonModule
     ],
     declarations: [
         JhiLoginModalComponent,
@@ -38,7 +38,7 @@ import {
     ],
     entryComponents: [JhiLoginModalComponent],
     exports: [
-        MicroSharedCommonModule,
+        CyberholocampusSharedCommonModule,
         JhiLoginModalComponent,
         HasAnyAuthorityDirective,
         DatePipe
@@ -46,4 +46,4 @@ import {
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
 })
-export class MicroSharedModule {}
+export class CyberholocampusSharedModule {}

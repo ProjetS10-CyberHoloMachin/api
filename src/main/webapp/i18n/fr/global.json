@@ -1,6 +1,6 @@
 {
     "global": {
-        "title": "Micro",
+        "title": "Cyberholocampus",
         "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
         "menu": {
             "home": "Accueil",
@@ -8,11 +8,9 @@
             "entities": {
                 "main": "Entités",
                 "notification": "Notification",
-                "infoDefinition": "Info Definition",
-                "info": "Info",
+                "notificationData": "Notification Data",
                 "affectation": "Affectation",
                 "building": "Building",
-                "buildingDataDefinition": "Building Data Definition",
                 "buildingData": "Building Data",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },

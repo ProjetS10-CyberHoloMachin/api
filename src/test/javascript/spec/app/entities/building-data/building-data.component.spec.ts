@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { BuildingDataComponent } from '../../../../../../main/webapp/app/entities/building-data/building-data.component';
 import { BuildingDataService } from '../../../../../../main/webapp/app/entities/building-data/building-data.service';
 import { BuildingData } from '../../../../../../main/webapp/app/entities/building-data/building-data.model';
@@ -17,7 +17,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [BuildingDataComponent],
                 providers: [
                     BuildingDataService

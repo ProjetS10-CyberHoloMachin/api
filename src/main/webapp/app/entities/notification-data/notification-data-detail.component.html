@@ -1,0 +1,36 @@
+
+<div *ngIf="notificationData">
+    <h2><span jhiTranslate="cyberholocampusApp.notificationData.detail.title">Notification Data</span> {{notificationData.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="cyberholocampusApp.notificationData.label">Label</span></dt>
+        <dd>
+            <span>{{notificationData.label}}</span>
+        </dd>
+        <dt><span jhiTranslate="cyberholocampusApp.notificationData.description">Description</span></dt>
+        <dd>
+            <span>{{notificationData.description}}</span>
+        </dd>
+        <dt><span jhiTranslate="cyberholocampusApp.notificationData.notification">Notification</span></dt>
+        <dd>
+            <div *ngIf="notificationData.notification">
+                <a [routerLink]="['/notification', notificationData.notification?.id]">{{notificationData.notification?.title}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'notification-data/'+ notificationData.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

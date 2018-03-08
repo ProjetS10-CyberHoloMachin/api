@@ -1,8 +1,8 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { MicroSharedModule } from '../../shared';
-import { MicroAdminModule } from '../../admin/admin.module';
+import { CyberholocampusSharedModule } from '../../shared';
+import { CyberholocampusAdminModule } from '../../admin/admin.module';
 import {
     AffectationService,
     AffectationPopupService,
@@ -14,7 +14,6 @@ import {
     AffectationDeleteDialogComponent,
     affectationRoute,
     affectationPopupRoute,
-    AffectationResolvePagingParams,
 } from './';
 
 const ENTITY_STATES = [
@@ -24,8 +23,8 @@ const ENTITY_STATES = [
 
 @NgModule({
     imports: [
-        MicroSharedModule,
-        MicroAdminModule,
+        CyberholocampusSharedModule,
+        CyberholocampusAdminModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [
@@ -46,8 +45,7 @@ const ENTITY_STATES = [
     providers: [
         AffectationService,
         AffectationPopupService,
-        AffectationResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MicroAffectationModule {}
+export class CyberholocampusAffectationModule {}

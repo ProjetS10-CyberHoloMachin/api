@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MicroTestModule } from '../../../test.module';
+import { CyberholocampusTestModule } from '../../../test.module';
 import { NotificationDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/notification/notification-delete-dialog.component';
 import { NotificationService } from '../../../../../../main/webapp/app/entities/notification/notification.service';
 
@@ -19,7 +19,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [MicroTestModule],
+                imports: [CyberholocampusTestModule],
                 declarations: [NotificationDeleteDialogComponent],
                 providers: [
                     NotificationService

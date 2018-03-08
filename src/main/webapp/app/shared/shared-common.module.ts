@@ -4,7 +4,7 @@ import { registerLocaleData } from '@angular/common';
 import locale from '@angular/common/locales/fr';
 
 import {
-    MicroSharedLibsModule,
+    CyberholocampusSharedLibsModule,
     JhiLanguageHelper,
     FindLanguageFromKeyPipe,
     JhiAlertComponent,
@@ -13,7 +13,7 @@ import {
 
 @NgModule({
     imports: [
-        MicroSharedLibsModule
+        CyberholocampusSharedLibsModule
     ],
     declarations: [
         FindLanguageFromKeyPipe,
@@ -29,13 +29,13 @@ import {
         },
     ],
     exports: [
-        MicroSharedLibsModule,
+        CyberholocampusSharedLibsModule,
         FindLanguageFromKeyPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]
 })
-export class MicroSharedCommonModule {
+export class CyberholocampusSharedCommonModule {
     constructor() {
         registerLocaleData(locale);
     }

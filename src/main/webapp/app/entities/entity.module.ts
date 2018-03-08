@@ -1,23 +1,19 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { MicroNotificationModule } from './notification/notification.module';
-import { MicroInfoDefinitionModule } from './info-definition/info-definition.module';
-import { MicroInfoModule } from './info/info.module';
-import { MicroAffectationModule } from './affectation/affectation.module';
-import { MicroBuildingModule } from './building/building.module';
-import { MicroBuildingDataDefinitionModule } from './building-data-definition/building-data-definition.module';
-import { MicroBuildingDataModule } from './building-data/building-data.module';
+import { CyberholocampusNotificationModule } from './notification/notification.module';
+import { CyberholocampusNotificationDataModule } from './notification-data/notification-data.module';
+import { CyberholocampusAffectationModule } from './affectation/affectation.module';
+import { CyberholocampusBuildingModule } from './building/building.module';
+import { CyberholocampusBuildingDataModule } from './building-data/building-data.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
     imports: [
-        MicroNotificationModule,
-        MicroInfoDefinitionModule,
-        MicroInfoModule,
-        MicroAffectationModule,
-        MicroBuildingModule,
-        MicroBuildingDataDefinitionModule,
-        MicroBuildingDataModule,
+        CyberholocampusNotificationModule,
+        CyberholocampusNotificationDataModule,
+        CyberholocampusAffectationModule,
+        CyberholocampusBuildingModule,
+        CyberholocampusBuildingDataModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],
@@ -25,4 +21,4 @@ import { MicroBuildingDataModule } from './building-data/building-data.module';
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MicroEntityModule {}
+export class CyberholocampusEntityModule {}
