@@ -34,6 +34,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="active" type="bit">
+                <constraints nullable="false" />
+            </column>
+
             <column name="building_id" type="bigint">
                 <constraints nullable="false" />
             </column>

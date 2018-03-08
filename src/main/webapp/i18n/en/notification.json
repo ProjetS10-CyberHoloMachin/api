@@ -20,6 +20,7 @@
             "date": "Date",
             "type": "Type",
             "title": "Title",
+            "active": "Active",
             "infos": "Infos",
             "affectation": "Affectation",
             "building": "Building"

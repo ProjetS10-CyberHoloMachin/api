@@ -53,6 +53,9 @@ public class NotificationResourceIntTest {
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
 
+    private static final Boolean DEFAULT_ACTIVE = false;
+    private static final Boolean UPDATED_ACTIVE = true;
+
     @Autowired
     private NotificationRepository notificationRepository;
 
@@ -96,7 +99,8 @@ public class NotificationResourceIntTest {
         Notification notification = new Notification()
             .date(DEFAULT_DATE)
             .type(DEFAULT_TYPE)
-            .title(DEFAULT_TITLE);
+            .title(DEFAULT_TITLE)
+            .active(DEFAULT_ACTIVE);
         // Add required entity
         Affectation affectation = AffectationResourceIntTest.createEntity(em);
         em.persist(affectation);
@@ -134,6 +138,7 @@ public class NotificationResourceIntTest {
         assertThat(testNotification.getDate()).isEqualTo(DEFAULT_DATE);
         assertThat(testNotification.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testNotification.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(testNotification.isActive()).isEqualTo(DEFAULT_ACTIVE);
 
         // Validate the Notification in Elasticsearch
         Notification notificationEs = notificationSearchRepository.findOne(testNotification.getId());
@@ -215,6 +220,24 @@ public class NotificationResourceIntTest {
 
     @Test
     @Transactional
+    public void checkActiveIsRequired() throws Exception {
+        int databaseSizeBeforeTest = notificationRepository.findAll().size();
+        // set the field null
+        notification.setActive(null);
+
+        // Create the Notification, which fails.
+
+        restNotificationMockMvc.perform(post("/api/notifications")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(notification)))
+            .andExpect(status().isBadRequest());
+
+        List<Notification> notificationList = notificationRepository.findAll();
+        assertThat(notificationList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllNotifications() throws Exception {
         // Initialize the database
         notificationRepository.saveAndFlush(notification);
@@ -226,7 +249,8 @@ public class NotificationResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(notification.getId().intValue())))
             .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())))
+            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
 
     @Test
@@ -242,7 +266,8 @@ public class NotificationResourceIntTest {
             .andExpect(jsonPath("$.id").value(notification.getId().intValue()))
             .andExpect(jsonPath("$.date").value(DEFAULT_DATE.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
-            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE.toString()));
+            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE.toString()))
+            .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()));
     }
 
     @Test
@@ -268,7 +293,8 @@ public class NotificationResourceIntTest {
         updatedNotification
             .date(UPDATED_DATE)
             .type(UPDATED_TYPE)
-            .title(UPDATED_TITLE);
+            .title(UPDATED_TITLE)
+            .active(UPDATED_ACTIVE);
 
         restNotificationMockMvc.perform(put("/api/notifications")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -282,6 +308,7 @@ public class NotificationResourceIntTest {
         assertThat(testNotification.getDate()).isEqualTo(UPDATED_DATE);
         assertThat(testNotification.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testNotification.getTitle()).isEqualTo(UPDATED_TITLE);
+        assertThat(testNotification.isActive()).isEqualTo(UPDATED_ACTIVE);
 
         // Validate the Notification in Elasticsearch
         Notification notificationEs = notificationSearchRepository.findOne(testNotification.getId());
@@ -342,7 +369,8 @@ public class NotificationResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(notification.getId().intValue())))
             .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())));
+            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())))
+            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
 
     @Test
