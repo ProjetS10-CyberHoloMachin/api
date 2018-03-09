@@ -12,9 +12,11 @@ export class Notification implements BaseEntity {
         public date?: any,
         public type?: NotificationType,
         public title?: string,
+        public active?: boolean,
         public infos?: BaseEntity[],
         public affectations?: BaseEntity[],
         public building?: BaseEntity,
     ) {
+        this.active = false;
     }
 }

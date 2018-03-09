@@ -1,6 +1,5 @@
 package fr.cyberholocampus.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -46,6 +45,10 @@ public class Notification implements Serializable {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @NotNull
+    @Column(name = "active", nullable = false)
+    private Boolean active;
+
     @OneToMany(mappedBy = "notification", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("notification")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -57,8 +60,8 @@ public class Notification implements Serializable {
     private Set<Affectation> affectations = new HashSet<>();
 
     @ManyToOne(optional = false)
-    @JsonIgnoreProperties("notifications")
     @NotNull
+    @JsonIgnoreProperties("notifications")
     private Building building;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -107,6 +110,19 @@ public class Notification implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public Notification active(Boolean active) {
+        this.active = active;
+        return this;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Set<NotificationData> getInfos() {
@@ -200,6 +216,7 @@ public class Notification implements Serializable {
             ", date='" + getDate() + "'" +
             ", type='" + getType() + "'" +
             ", title='" + getTitle() + "'" +
+            ", active='" + isActive() + "'" +
             "}";
     }
 }

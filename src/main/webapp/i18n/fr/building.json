@@ -18,6 +18,7 @@
                 "title": "Building"
             },
             "name": "Name",
+            "mapping": "Mapping",
             "data": "Data",
             "notification": "Notification"
         }

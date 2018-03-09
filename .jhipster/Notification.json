@@ -46,12 +46,19 @@
                 "minlength"
             ],
             "fieldValidateRulesMinlength": 3
+        },
+        {
+            "fieldName": "active",
+            "fieldType": "Boolean",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20180307134032",
-    "entityTableName": "notification",
     "dto": "no",
-    "pagination": "infinite-scroll",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "entityTableName": "notification",
+    "jpaMetamodelFiltering": false,
+    "pagination": "infinite-scroll"
 }

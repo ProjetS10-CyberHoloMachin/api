@@ -8,6 +8,13 @@
         <dd>
             <span>{{building.name}}</span>
         </dd>
+        <dt><span jhiTranslate="cyberholocampusApp.building.mapping">Mapping</span></dt>
+        <dd>
+            <div *ngIf="building.mapping">
+                <a (click)="openFile(building.mappingContentType, building.mapping)" jhiTranslate="entity.action.open">open</a>
+                {{building.mappingContentType}}, {{byteSize(building.mapping)}}
+            </div>
+        </dd>
     </dl>
 
     <button type="submit"

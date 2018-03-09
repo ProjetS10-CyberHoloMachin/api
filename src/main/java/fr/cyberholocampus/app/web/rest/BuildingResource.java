@@ -1,7 +1,9 @@
 package fr.cyberholocampus.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import fr.cyberholocampus.app.domain.Building;
+import fr.cyberholocampus.app.domain.View;
 
 import fr.cyberholocampus.app.repository.BuildingRepository;
 import fr.cyberholocampus.app.repository.search.BuildingSearchRepository;
@@ -24,8 +26,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -35,7 +35,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 @RestController
 @RequestMapping("/api")
 public class BuildingResource {
-
+    
     private final Logger log = LoggerFactory.getLogger(BuildingResource.class);
 
     private static final String ENTITY_NAME = "building";
@@ -48,7 +48,7 @@ public class BuildingResource {
         this.buildingRepository = buildingRepository;
         this.buildingSearchRepository = buildingSearchRepository;
     }
-
+    
     /**
      * POST  /buildings : Create a new building.
      *
@@ -99,6 +99,7 @@ public class BuildingResource {
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of buildings in body
      */
+    @JsonView(View.Building.class)
     @GetMapping("/buildings")
     @Timed
     public ResponseEntity<List<Building>> getAllBuildings(Pageable pageable) {
@@ -114,6 +115,7 @@ public class BuildingResource {
      * @param id the id of the building to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the building, or with status 404 (Not Found)
      */
+    @JsonView(View.Building.class)
     @GetMapping("/buildings/{id}")
     @Timed
     public ResponseEntity<Building> getBuilding(@PathVariable Long id) {
@@ -122,6 +124,20 @@ public class BuildingResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(building));
     }
 
+    /**
+     * GET  /buildings/:id/withmapping : get the mapping of the "id" building.
+     *
+     * @param id the id of the building of the mapping to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the building, or with status 404 (Not Found)
+     */
+    @GetMapping("/buildings/{id}/withmapping")
+    @Timed
+    public ResponseEntity<Building> getBuildingMapping(@PathVariable Long id) {
+        log.debug("REST request to get Building : {}", id);
+        Building building = buildingRepository.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(building));
+    }
+    
     /**
      * DELETE  /buildings/:id : delete the "id" building.
      *

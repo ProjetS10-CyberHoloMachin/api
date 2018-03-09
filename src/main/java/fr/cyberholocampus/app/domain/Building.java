@@ -2,6 +2,7 @@ package fr.cyberholocampus.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -26,17 +27,27 @@ public class Building implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @JsonView(View.Building.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
+    @JsonView(View.Building.class)
     @Size(min = 3)
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Lob
+    @Column(name = "mapping")
+    private byte[] mapping;
+
+    @Column(name = "mapping_content_type")
+    private String mappingContentType;
+
     @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("building")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonView(View.Building.class)
     private Set<BuildingData> data = new HashSet<>();
 
     @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
@@ -64,6 +75,32 @@ public class Building implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public byte[] getMapping() {
+        return mapping;
+    }
+
+    public Building mapping(byte[] mapping) {
+        this.mapping = mapping;
+        return this;
+    }
+
+    public void setMapping(byte[] mapping) {
+        this.mapping = mapping;
+    }
+
+    public String getMappingContentType() {
+        return mappingContentType;
+    }
+
+    public Building mappingContentType(String mappingContentType) {
+        this.mappingContentType = mappingContentType;
+        return this;
+    }
+
+    public void setMappingContentType(String mappingContentType) {
+        this.mappingContentType = mappingContentType;
     }
 
     public Set<BuildingData> getData() {
@@ -142,6 +179,8 @@ public class Building implements Serializable {
         return "Building{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", mapping='" + getMapping() + "'" +
+            ", mappingContentType='" + getMappingContentType() + "'" +
             "}";
     }
 }

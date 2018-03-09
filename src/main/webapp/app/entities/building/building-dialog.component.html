@@ -27,6 +27,24 @@
                 </small>
             </div>
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="cyberholocampusApp.building.mapping" for="field_mapping">Mapping</label>
+            <div>
+                <div *ngIf="building.mapping" class="form-text text-danger clearfix">
+                    <a class="pull-left" (click)="openFile(building.mappingContentType, building.mapping)" jhiTranslate="entity.action.open">open</a><br>
+                    <span class="pull-left">{{building.mappingContentType}}, {{byteSize(building.mapping)}}</span>
+                    <button type="button" (click)="building.mapping=null;building.mappingContentType=null;"
+                            class="btn btn-secondary btn-xs pull-right">
+                        <span class="fa fa-times"></span>
+                    </button>
+                </div>
+                <input type="file" id="file_mapping" (change)="setFileData($event, building, 'mapping', false)" jhiTranslate="entity.action.addblob"/>
+            </div>
+            <input type="hidden" class="form-control" name="mapping" id="field_mapping"
+                [(ngModel)]="building.mapping" />
+            <input type="hidden" class="form-control" name="mappingContentType" id="field_mappingContentType"
+                [(ngModel)]="building.mappingContentType" />
+        </div>
 
     </div>
     <div class="modal-footer">

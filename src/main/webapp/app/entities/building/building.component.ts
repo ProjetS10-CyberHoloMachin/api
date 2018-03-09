@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
 import { Building } from './building.model';
 import { BuildingService } from './building.service';
@@ -28,6 +28,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
     constructor(
         private buildingService: BuildingService,
         private jhiAlertService: JhiAlertService,
+        private dataUtils: JhiDataUtils,
         private eventManager: JhiEventManager,
         private parseLinks: JhiParseLinks,
         private activatedRoute: ActivatedRoute,
@@ -119,6 +120,14 @@ export class BuildingComponent implements OnInit, OnDestroy {
 
     trackId(index: number, item: Building) {
         return item.id;
+    }
+
+    byteSize(field) {
+        return this.dataUtils.byteSize(field);
+    }
+
+    openFile(contentType, field) {
+        return this.dataUtils.openFile(contentType, field);
     }
     registerChangeInBuildings() {
         this.eventSubscriber = this.eventManager.subscribe('buildingListModification', (response) => this.reset());
