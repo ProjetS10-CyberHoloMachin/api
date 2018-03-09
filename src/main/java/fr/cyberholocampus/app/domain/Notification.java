@@ -61,6 +61,7 @@ public class Notification implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties("notifications")
     private Building building;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -1,6 +1,8 @@
 package fr.cyberholocampus.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,10 +27,12 @@ public class Building implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @JsonView(View.Building.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
+    @JsonView(View.Building.class)
     @Size(min = 3)
     @Column(name = "name", nullable = false)
     private String name;
@@ -43,6 +47,7 @@ public class Building implements Serializable {
     @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("building")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonView(View.Building.class)
     private Set<BuildingData> data = new HashSet<>();
 
     @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
