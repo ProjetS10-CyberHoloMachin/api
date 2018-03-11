@@ -1,12 +1,14 @@
-
 import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { HttpClient} from '@angular/common/http';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Account, LoginModalService, Principal } from '../shared';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Affectation } from '../entities/affectation';
+import { Building } from '../entities/building';
+import { Observable } from 'rxjs/Observable';
+import { SERVER_API_URL } from '../app.constants';
+
 @Component({
     selector: 'jhi-home',
     templateUrl: './home.component.html',
@@ -15,9 +17,11 @@ import { Affectation } from '../entities/affectation';
     ]
 })
 export class HomeComponent implements OnInit {
+    private resourceUrl =  SERVER_API_URL + 'api/affectations';
     account: Account;
     modalRef: NgbModalRef;
     affectations: Affectation [];
+    AllBuildings: Building [];
     itemsPerPage: any;
     page: any;
     Description: boolean;
@@ -29,7 +33,8 @@ export class HomeComponent implements OnInit {
         private loginModalService: LoginModalService,
         private eventManager: JhiEventManager,
         private http: HttpClient,
-    ) {
+
+) {
     }
     ngOnInit() {
         this.refresh();
@@ -64,8 +69,12 @@ export class HomeComponent implements OnInit {
         this.affectations = [];
         console.log('les affectations de l utilisateur courant ');
         this.http.get('api/affectations/own').subscribe(
-            (res) => this.onSuccess(res),
+            (res: HttpResponse<Affectation[]>) => this.onSuccess(res),
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+    }
+
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
     }
 }

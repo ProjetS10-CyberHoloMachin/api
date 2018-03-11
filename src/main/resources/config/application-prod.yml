@@ -36,7 +36,7 @@ spring:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://localhost:3306/cyberholocampus?useUnicode=true&characterEncoding=utf8&useSSL=false
         username: root
-        password: octobre19
+        password: 
         hikari:
             data-source-properties:
                 cachePrepStmts: true

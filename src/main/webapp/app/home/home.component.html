@@ -13,8 +13,39 @@
                 Vos affectations
                 <table class="table table-striped">
                     <tr *ngFor="let affect of affectations ;trackBy: trackId">
-                        <td>{{affect.id}}</td>
+                        <td><a [routerLink]="['../affectation', affect.id ]">{{affect.id}}</a></td>
                         <td class="text-right"></td>
+                        <td>
+                            <div *ngIf="affect.notification">
+                                <a [routerLink]="['../notification', affectation.notification?.id ]" >{{affectation.notification?.title}}</a>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group flex-btn-group-container">
+                                <button type="submit"
+                                        [routerLink]="['../affectation', affect.id ]"
+                                        class="btn btn-info btn-sm">
+                                    <span class="fa fa-eye"></span>
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                                </button>
+                                <button type="submit"
+                                        [routerLink]="['/', { outlets: { popup: 'affectation/'+ affect.id + '/edit'} }]"
+                                        replaceUrl="true"
+                                        queryParamsHandling="merge"
+                                        class="btn btn-primary btn-sm">
+                                    <span class="fa fa-pencil"></span>
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                                </button>
+                                <button type="submit"
+                                        [routerLink]="['/', { outlets: { popup: 'affectation/'+ affect.id + '/delete'} }]"
+                                        replaceUrl="true"
+                                        queryParamsHandling="merge"
+                                        class="btn btn-danger btn-sm">
+                                    <span class="fa fa-remove"></span>
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
