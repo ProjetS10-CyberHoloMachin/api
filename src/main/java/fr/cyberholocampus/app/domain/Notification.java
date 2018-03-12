@@ -1,6 +1,8 @@
 package fr.cyberholocampus.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -20,6 +22,7 @@ import fr.cyberholocampus.app.domain.enumeration.NotificationType;
  * A Notification.
  */
 @Entity
+@JsonInclude(Include.NON_DEFAULT)
 @Table(name = "notification")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "notification")

@@ -2,6 +2,8 @@ package fr.cyberholocampus.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -19,6 +21,7 @@ import java.util.Objects;
  * A Building.
  */
 @Entity
+@JsonInclude(Include.NON_DEFAULT)
 @Table(name = "building")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "building")
@@ -53,6 +56,7 @@ public class Building implements Serializable {
     @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("building")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonView(View.Building.class)
     private Set<Notification> notifications = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

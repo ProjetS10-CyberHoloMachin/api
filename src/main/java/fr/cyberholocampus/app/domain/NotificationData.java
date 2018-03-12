@@ -1,6 +1,8 @@
 package fr.cyberholocampus.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -15,6 +17,7 @@ import java.util.Objects;
  * A NotificationData.
  */
 @Entity
+@JsonInclude(Include.NON_DEFAULT)
 @Table(name = "notification_data")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "notificationdata")
