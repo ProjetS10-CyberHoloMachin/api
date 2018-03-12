@@ -15,6 +15,13 @@
                 {{building.mappingContentType}}, {{byteSize(building.mapping)}}
             </div>
         </dd>
+        <dt><span jhiTranslate="cyberholocampusApp.building.model">Model</span></dt>
+        <dd>
+            <div *ngIf="building.model">
+                <a (click)="openFile(building.modelContentType, building.model)" jhiTranslate="entity.action.open">open</a>
+                {{building.modelContentType}}, {{byteSize(building.model)}}
+            </div>
+        </dd>
     </dl>
 
     <button type="submit"

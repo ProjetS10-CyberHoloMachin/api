@@ -19,6 +19,7 @@
             },
             "name": "Name",
             "mapping": "Mapping",
+            "model": "Model",
             "data": "Data",
             "notification": "Notification"
         }

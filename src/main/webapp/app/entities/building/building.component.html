@@ -32,6 +32,7 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="name"><span jhiTranslate="cyberholocampusApp.building.name">Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="mapping"><span jhiTranslate="cyberholocampusApp.building.mapping">Mapping</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="model"><span jhiTranslate="cyberholocampusApp.building.model">Model</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -42,6 +43,10 @@
                 <td>
                     <a *ngIf="building.mapping" (click)="openFile(building.mappingContentType, building.mapping)" jhiTranslate="entity.action.open">open</a>
                     <span *ngIf="building.mapping">{{building.mappingContentType}}, {{byteSize(building.mapping)}}</span>
+                </td>
+                <td>
+                    <a *ngIf="building.model" (click)="openFile(building.modelContentType, building.model)" jhiTranslate="entity.action.open">open</a>
+                    <span *ngIf="building.model">{{building.modelContentType}}, {{byteSize(building.model)}}</span>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

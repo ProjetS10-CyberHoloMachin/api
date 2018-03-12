@@ -35,7 +35,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 @RestController
 @RequestMapping("/api")
 public class BuildingResource {
-    
+
     private final Logger log = LoggerFactory.getLogger(BuildingResource.class);
 
     private static final String ENTITY_NAME = "building";
@@ -48,7 +48,7 @@ public class BuildingResource {
         this.buildingRepository = buildingRepository;
         this.buildingSearchRepository = buildingSearchRepository;
     }
-    
+
     /**
      * POST  /buildings : Create a new building.
      *
@@ -125,19 +125,20 @@ public class BuildingResource {
     }
 
     /**
-     * GET  /buildings/:id/withmapping : get the mapping of the "id" building.
+     * GET  /buildings/:id/mapping : get the mapping of the "id" building.
      *
      * @param id the id of the building of the mapping to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the building, or with status 404 (Not Found)
      */
-    @GetMapping("/buildings/{id}/withmapping")
+    @JsonView(View.BuildingMapping.class)
+    @GetMapping("/buildings/{id}/mapping")
     @Timed
     public ResponseEntity<Building> getBuildingMapping(@PathVariable Long id) {
-        log.debug("REST request to get Building : {}", id);
+        log.debug("REST request to get Building's mapping : {}", id);
         Building building = buildingRepository.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(building));
     }
-    
+
     /**
      * DELETE  /buildings/:id : delete the "id" building.
      *

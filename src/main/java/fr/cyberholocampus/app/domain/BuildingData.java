@@ -3,6 +3,7 @@ package fr.cyberholocampus.app.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -19,22 +20,25 @@ import java.util.Objects;
 @Entity
 @JsonInclude(Include.NON_DEFAULT)
 @Table(name = "building_data")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "buildingdata")
 public class BuildingData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
+    @JsonView(View.Building.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
+    @JsonView(View.Building.class)
     @Size(min = 3)
     @Column(name = "description", nullable = false)
     private String description;
 
     @NotNull
+    @JsonView(View.Building.class)
     @Size(min = 3)
     @Column(name = "jhi_label", nullable = false)
     private String label;

@@ -23,7 +23,7 @@ import java.util.Objects;
 @Entity
 @JsonInclude(Include.NON_DEFAULT)
 @Table(name = "building")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "building")
 public class Building implements Serializable {
 
@@ -41,22 +41,31 @@ public class Building implements Serializable {
     private String name;
 
     @Lob
+    @JsonView(View.BuildingMapping.class)
     @Column(name = "mapping")
     private byte[] mapping;
 
     @Column(name = "mapping_content_type")
     private String mappingContentType;
 
-    @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("building")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JsonView(View.Building.class)
-    private Set<BuildingData> data = new HashSet<>();
+    @Lob
+    @JsonView(View.BuildingMapping.class)
+    @Column(name = "model")
+    private byte[] model;
+
+    @Column(name = "model_content_type")
+    private String modelContentType;
 
     @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("building")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonView(View.Building.class)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<BuildingData> data = new HashSet<>();
+
+    @OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @JsonView(View.Building.class)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Notification> notifications = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -105,6 +114,32 @@ public class Building implements Serializable {
 
     public void setMappingContentType(String mappingContentType) {
         this.mappingContentType = mappingContentType;
+    }
+
+    public byte[] getModel() {
+        return model;
+    }
+
+    public Building model(byte[] model) {
+        this.model = model;
+        return this;
+    }
+
+    public void setModel(byte[] model) {
+        this.model = model;
+    }
+
+    public String getModelContentType() {
+        return modelContentType;
+    }
+
+    public Building modelContentType(String modelContentType) {
+        this.modelContentType = modelContentType;
+        return this;
+    }
+
+    public void setModelContentType(String modelContentType) {
+        this.modelContentType = modelContentType;
     }
 
     public Set<BuildingData> getData() {
@@ -185,6 +220,8 @@ public class Building implements Serializable {
             ", name='" + getName() + "'" +
             ", mapping='" + getMapping() + "'" +
             ", mappingContentType='" + getMappingContentType() + "'" +
+            ", model='" + getModel() + "'" +
+            ", modelContentType='" + getModelContentType() + "'" +
             "}";
     }
 }

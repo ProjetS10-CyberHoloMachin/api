@@ -24,7 +24,7 @@ import fr.cyberholocampus.app.domain.enumeration.NotificationType;
 @Entity
 @JsonInclude(Include.NON_DEFAULT)
 @Table(name = "notification")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "notification")
 public class Notification implements Serializable {
 

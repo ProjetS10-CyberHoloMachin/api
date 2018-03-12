@@ -19,7 +19,7 @@ import java.util.Objects;
 @Entity
 @JsonInclude(Include.NON_DEFAULT)
 @Table(name = "affectation")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "affectation")
 public class Affectation implements Serializable {
 
@@ -34,7 +34,7 @@ public class Affectation implements Serializable {
     private User user;
 
     @ManyToOne
-    @JsonIgnoreProperties("affectations")
+    @JsonIgnoreProperties(value = {"affectations", "building"}) // not working properly
     private Notification notification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

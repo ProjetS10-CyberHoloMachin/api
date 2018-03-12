@@ -6,4 +6,5 @@ package fr.cyberholocampus.app.domain;
  */
 public class View {
     public interface Building{};
+    public interface BuildingMapping{};
 }

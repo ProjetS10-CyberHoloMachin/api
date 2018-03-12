@@ -48,6 +48,11 @@ public class BuildingResourceIntTest {
     private static final String DEFAULT_MAPPING_CONTENT_TYPE = "image/jpg";
     private static final String UPDATED_MAPPING_CONTENT_TYPE = "image/png";
 
+    private static final byte[] DEFAULT_MODEL = TestUtil.createByteArray(1, "0");
+    private static final byte[] UPDATED_MODEL = TestUtil.createByteArray(2, "1");
+    private static final String DEFAULT_MODEL_CONTENT_TYPE = "image/jpg";
+    private static final String UPDATED_MODEL_CONTENT_TYPE = "image/png";
+
     @Autowired
     private BuildingRepository buildingRepository;
 
@@ -91,7 +96,9 @@ public class BuildingResourceIntTest {
         Building building = new Building()
             .name(DEFAULT_NAME)
             .mapping(DEFAULT_MAPPING)
-            .mappingContentType(DEFAULT_MAPPING_CONTENT_TYPE);
+            .mappingContentType(DEFAULT_MAPPING_CONTENT_TYPE)
+            .model(DEFAULT_MODEL)
+            .modelContentType(DEFAULT_MODEL_CONTENT_TYPE);
         return building;
     }
 
@@ -119,6 +126,8 @@ public class BuildingResourceIntTest {
         assertThat(testBuilding.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testBuilding.getMapping()).isEqualTo(DEFAULT_MAPPING);
         assertThat(testBuilding.getMappingContentType()).isEqualTo(DEFAULT_MAPPING_CONTENT_TYPE);
+        assertThat(testBuilding.getModel()).isEqualTo(DEFAULT_MODEL);
+        assertThat(testBuilding.getModelContentType()).isEqualTo(DEFAULT_MODEL_CONTENT_TYPE);
 
         // Validate the Building in Elasticsearch
         Building buildingEs = buildingSearchRepository.findOne(testBuilding.getId());
@@ -175,7 +184,9 @@ public class BuildingResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(building.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].mappingContentType").value(hasItem(DEFAULT_MAPPING_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].mapping").value(hasItem(Base64Utils.encodeToString(DEFAULT_MAPPING))));
+            .andExpect(jsonPath("$.[*].mapping").value(hasItem(Base64Utils.encodeToString(DEFAULT_MAPPING))))
+            .andExpect(jsonPath("$.[*].modelContentType").value(hasItem(DEFAULT_MODEL_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].model").value(hasItem(Base64Utils.encodeToString(DEFAULT_MODEL))));
     }
 
     @Test
@@ -191,7 +202,9 @@ public class BuildingResourceIntTest {
             .andExpect(jsonPath("$.id").value(building.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.mappingContentType").value(DEFAULT_MAPPING_CONTENT_TYPE))
-            .andExpect(jsonPath("$.mapping").value(Base64Utils.encodeToString(DEFAULT_MAPPING)));
+            .andExpect(jsonPath("$.mapping").value(Base64Utils.encodeToString(DEFAULT_MAPPING)))
+            .andExpect(jsonPath("$.modelContentType").value(DEFAULT_MODEL_CONTENT_TYPE))
+            .andExpect(jsonPath("$.model").value(Base64Utils.encodeToString(DEFAULT_MODEL)));
     }
 
     @Test
@@ -217,7 +230,9 @@ public class BuildingResourceIntTest {
         updatedBuilding
             .name(UPDATED_NAME)
             .mapping(UPDATED_MAPPING)
-            .mappingContentType(UPDATED_MAPPING_CONTENT_TYPE);
+            .mappingContentType(UPDATED_MAPPING_CONTENT_TYPE)
+            .model(UPDATED_MODEL)
+            .modelContentType(UPDATED_MODEL_CONTENT_TYPE);
 
         restBuildingMockMvc.perform(put("/api/buildings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -231,6 +246,8 @@ public class BuildingResourceIntTest {
         assertThat(testBuilding.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testBuilding.getMapping()).isEqualTo(UPDATED_MAPPING);
         assertThat(testBuilding.getMappingContentType()).isEqualTo(UPDATED_MAPPING_CONTENT_TYPE);
+        assertThat(testBuilding.getModel()).isEqualTo(UPDATED_MODEL);
+        assertThat(testBuilding.getModelContentType()).isEqualTo(UPDATED_MODEL_CONTENT_TYPE);
 
         // Validate the Building in Elasticsearch
         Building buildingEs = buildingSearchRepository.findOne(testBuilding.getId());
@@ -291,7 +308,9 @@ public class BuildingResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(building.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].mappingContentType").value(hasItem(DEFAULT_MAPPING_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].mapping").value(hasItem(Base64Utils.encodeToString(DEFAULT_MAPPING))));
+            .andExpect(jsonPath("$.[*].mapping").value(hasItem(Base64Utils.encodeToString(DEFAULT_MAPPING))))
+            .andExpect(jsonPath("$.[*].modelContentType").value(hasItem(DEFAULT_MODEL_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].model").value(hasItem(Base64Utils.encodeToString(DEFAULT_MODEL))));
     }
 
     @Test

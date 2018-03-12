@@ -19,7 +19,7 @@ import java.util.Objects;
 @Entity
 @JsonInclude(Include.NON_DEFAULT)
 @Table(name = "notification_data")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "notificationdata")
 public class NotificationData implements Serializable {
 
