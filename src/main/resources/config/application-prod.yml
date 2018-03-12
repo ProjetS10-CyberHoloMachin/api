@@ -36,7 +36,7 @@ spring:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://localhost:3306/cyberholocampus?useUnicode=true&characterEncoding=utf8&useSSL=false
         username: root
-        password:
+        password: 
         hikari:
             data-source-properties:
                 cachePrepStmts: true
@@ -63,8 +63,8 @@ spring:
     mail:
         host: localhost
         port: 25
-        username:
-        password:
+        username: root
+        password: octobre19
     thymeleaf:
         cache: true
     zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
