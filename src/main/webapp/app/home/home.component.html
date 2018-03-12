@@ -3,21 +3,22 @@
         <span class="hipster img-fluid rounded"></span>
     </div>
     <div class="col-md-9">
-        <p class="lead" >CyberHOLOCampus2055</p>
+        <h1 class="display-4">CyberHOLOCampus2055</h1>
+
         <div [ngSwitch]="isAuthenticated()">
             <div class="alert alert-success" *ngSwitchCase="true">
                 <span *ngIf="account" jhiTranslate="home.logged.message"
                       translateValues="{username: '{{account.login}}'}"> You are logged in as user "{{account.login}}". </span>
             </div>
-            <div *ngSwitchCase="true">
-                Vos affectations
+            <div class="table-responsive" *ngIf="affectations" *ngSwitchCase="true">
+                <p class="lead" >Vos affectations</p>
                 <table class="table table-striped">
                     <tr *ngFor="let affect of affectations ;trackBy: trackId">
                         <td><a [routerLink]="['../affectation', affect.id ]">{{affect.id}}</a></td>
                         <td class="text-right"></td>
                         <td>
                             <div *ngIf="affect.notification">
-                                <a [routerLink]="['../notification', affectation.notification?.id ]" >{{affectation.notification?.title}}</a>
+                                <a [routerLink]="['../notification', affect.notification?.id ]" >{{affect.notification?.title}}</a>
                             </div>
                         </td>
                         <td class="text-right">
