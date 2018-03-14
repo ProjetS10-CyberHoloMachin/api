@@ -44,6 +44,7 @@ public class BuildingData implements Serializable {
     private String label;
 
     @ManyToOne(optional = false)
+    @JsonView(View.Building.class)
     @JsonIgnoreProperties("data")
     @NotNull
     private Building building;
