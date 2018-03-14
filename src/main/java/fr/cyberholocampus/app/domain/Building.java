@@ -142,6 +142,7 @@ public class Building implements Serializable {
         this.modelContentType = modelContentType;
     }
 
+    @JsonIgnoreProperties("building")
     public Set<BuildingData> getData() {
         return data;
     }
