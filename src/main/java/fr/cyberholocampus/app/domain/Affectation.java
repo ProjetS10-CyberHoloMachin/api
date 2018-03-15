@@ -34,7 +34,7 @@ public class Affectation implements Serializable {
     private User user;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = {"affectations", "building"}) // not working properly
+    @JsonIgnoreProperties({"affectations", "building", "infos"}) // not working properly
     private Notification notification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
